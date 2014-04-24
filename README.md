@@ -79,7 +79,7 @@ Loader：
     3. InjectExpandableListAdapter.ChildViewHolder
     
 #### Example
-##### Activity：
+##### InjectActivity：
 假设我们要从MainActivity跳转到另外一个Activity，还要携带一些数据。
 首先来看MainActivity的实现
 ```java
@@ -488,13 +488,11 @@ public class InformationListFragment extends MyFragment {
 public class ExpertAdapter extends BaseAdapter {
 	private Context context;
 	private List<Expert> experts;
-	private OnClickAskQuestionListener onClickAskQuestionListener;
 	private Expert expert;
 	
-	public ExpertAdapter(Context context, List<Expert> experts, OnClickAskQuestionListener onClickAskQuestionListener){
+	public ExpertAdapter(Context context, List<Expert> experts){
 		this.context = context;
-		this.experts = experts;
-		this.onClickAskQuestionListener = onClickAskQuestionListener;
+		this.experts = experts;;
 	}
 	
 	@Override
@@ -542,10 +540,6 @@ public class ExpertAdapter extends BaseAdapter {
 		TextView majorText;
 		Button askQuestion;
 	}
-	
-	public interface OnClickAskQuestionListener{
-		public void onClickAskQuestion(View view, Expert expert);
-	}
 }
 ```
 然后你是这样用的
@@ -555,10 +549,11 @@ listView.setAdapter(new ExpertAdapter(getBaseContext(), experts));
 ```
 
 那么采用InjectAdapter就会方便很多，可以让你省去频繁创建Adapter的苦恼，并且思路更清晰。
-首先你需要创建一个ViewHolder，实现InjectAdapter.ViewHolder接口，来影射你的R.layout.list_item_expert布局如下：
+
+首先你需要创建一个ViewHolder，实现InjectAdapter.ViewHolder接口，来影射你的R.layout.list_item_expert布局，如下：
 ```java
 @InjectContentView(R.layout.list_item_expert)
-public static class ExpertViewHolder implements InjectAdapter.ViewHolder<Expert>{
+public class ExpertViewHolder implements InjectAdapter.ViewHolder<Expert>{
     @InjectView(R.id.image_expertItem_headPortrait) ImageView headPortraitImage;
     @InjectView(R.id.text_expertItem_name) TextView nameText;
     @InjectView(R.id.text_expertItem_major) TextView majorText;
