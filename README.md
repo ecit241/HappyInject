@@ -2,12 +2,12 @@
 
 HappyInject是用在Android上的一个注入类库，类似于RoboGuice，但比RoboGuice更轻量级。
 
-##Features
+## Features
 >* 可注入Layout、View、Resource、Bundle Extra、Service、SharedPreferences、Fragment等资源的注入；
 >* 特别提供了InjectAdapter、InjectExpandableListAdapter通过注入来避免创建新的Adapter；
 >* 比RoboGuice更轻量级，只提供了上述资源的注入功能，因此对应用的整体性能几乎没有影响。
 
-##Usage
+## Usage
 可继承的超类分以下四种：
 
 Activity：
@@ -589,12 +589,20 @@ listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext()
 ```
 InjectExpandableListAdapter的用法同InjectAdapter一样。
 
-##Downloads
-[android-happy-inject-1.0.0.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.0.0.jar)
+## Downloads
+>* [android-happy-inject-1.0.0.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.0.0.jar)
 
-[android-happy-inject-1.0.0-with-src.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.0.0-with-src.jar)
+>* [android-happy-inject-1.0.0-with-src.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.0.0-with-src.jar)（包含源码）
 
-##License
+## Depend
+>* [android-support-v4.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/android-support-v4.jar) 可选的。如果你要使用InjectFragmentActivity、InjectFragment、InjectListFeagment、InjectDialogFragment就必须要引入此类库
+>* [android-support-v7-appcompat.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/android-support-v7-appcompat.jar)
+可选的。如果你要使用InjectActionBarActivity就必须要引入此类库，值的注意的是使用此类库的时候一定要使用sdk\extras\android\support\v7\appcompat\libs目录下的android-support-v4.jar（因为这个目录下的android-support-v4.jar包含有android-support-v7-appcompat.jar需要的类）
+>* [gson-2.2.2.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/gson-2.2.2.jar) 可选的。如果你要使用InjectExtraJson、InjectPreferenceJson就必须要引入此类库
+
+>*  如果你要使用InjectMapActivity就必须选择Google APIs
+
+## License
 ```java
 /*
  * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
