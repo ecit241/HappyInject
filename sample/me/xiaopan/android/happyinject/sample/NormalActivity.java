@@ -21,12 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import me.xiaopan.android.happyinject.DisableInjector;
 import me.xiaopan.android.happyinject.Inject;
 import me.xiaopan.android.happyinject.R;
-import me.xiaopan.android.happyinject.app.InjectActivity;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
@@ -55,8 +54,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-@DisableInjector
-public class NormalActivity extends InjectActivity {
+public class NormalActivity extends Activity {
 	private TextView textView1;
 	private TextView textView2;
 	private TextView textView3;

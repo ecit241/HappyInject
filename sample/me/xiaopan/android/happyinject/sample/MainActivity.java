@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import me.xiaopan.android.happyinject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -63,16 +62,33 @@ public class MainActivity extends FragmentActivity{
 	public static final String KEY_STRING_SET = "KEY_STRING_SET";
 	public static final String KEY_JSON = "KEY_JSON";
 	
-	@InjectView(android.R.id.list)
 	private ListView listView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ListView listView = new ListView(getBaseContext());
-		listView.setId(android.R.id.list);
+		listView = new ListView(getBaseContext());
 		setContentView(listView);
 		
+		// 先在SharedPreferences中放一些数据
+		PreferenceUtils.putBoolean(getBaseContext(), KEY_BOOLEAN, true);
+		PreferenceUtils.putFloat(getBaseContext(), KEY_FLOAT, 10000f);
+		PreferenceUtils.putInt(getBaseContext(), KEY_INT, 2000);
+		PreferenceUtils.putLong(getBaseContext(), KEY_LONG, 50000);
+		PreferenceUtils.putString(getBaseContext(), KEY_STRING, "Preference String");
+		Set<String> stringSet = new HashSet<String>();
+		stringSet.add("String Set 1");
+		stringSet.add("String Set 2");
+		stringSet.add("String Set 3");
+		stringSet.add("String Set 4");
+		PreferenceUtils.putStringSet(getBaseContext(), KEY_STRING_SET, stringSet);
+		MyBean bean2 = new MyBean();
+		bean2.setEmail("sky@xiaopan.me2");
+		bean2.setName("小潘2");
+		bean2.setSex("男2");
+		PreferenceUtils.putObject(getBaseContext(), KEY_JSON, bean2);
+		
+		// 然后初始化列表
 		String[] items = new String[]{"注入功能测试", "非注入功能测试", "FragmentDialog测试"};
 		listView.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, android.R.id.text1, items));
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -99,11 +115,15 @@ public class MainActivity extends FragmentActivity{
 				bundle.putShortArray(MainActivity.PARAM_SHORT_ARRAY, new short[]{3, 4, 5});
 				bundle.putString(MainActivity.PARAM_STRING, "String");
 				bundle.putStringArray(MainActivity.PARAM_STRING_ARRAY, new String[]{"String1", "String2", "String3"});
+				
+				// 将一个对象转换成JSON字符串放进Bundle中
 				MyBean bean = new MyBean();
 				bean.setEmail("sky@xiaopan.me");
 				bean.setName("小潘");
 				bean.setSex("男");
 				bundle.putString(PARAM_STRING_JSON, new Gson().toJson(bean));
+				
+				// 放一个字符串列表进去
 				ArrayList<String> stringList = new ArrayList<String>();
 				stringList.add("ArrayList String 1");
 				stringList.add("ArrayList String 2");
@@ -129,22 +149,5 @@ public class MainActivity extends FragmentActivity{
 				}
 			}
 		});
-		
-		PreferenceUtils.putBoolean(getBaseContext(), KEY_BOOLEAN, true);
-		PreferenceUtils.putFloat(getBaseContext(), KEY_FLOAT, 10000f);
-		PreferenceUtils.putInt(getBaseContext(), KEY_INT, 2000);
-		PreferenceUtils.putLong(getBaseContext(), KEY_LONG, 50000);
-		PreferenceUtils.putString(getBaseContext(), KEY_STRING, "Preference String");
-		Set<String> stringSet = new HashSet<String>();
-		stringSet.add("String Set 1");
-		stringSet.add("String Set 2");
-		stringSet.add("String Set 3");
-		stringSet.add("String Set 4");
-		PreferenceUtils.putStringSet(getBaseContext(), KEY_STRING_SET, stringSet);
-		MyBean bean2 = new MyBean();
-		bean2.setEmail("sky@xiaopan.me2");
-		bean2.setName("小潘2");
-		bean2.setSex("男2");
-		PreferenceUtils.putObject(getBaseContext(), KEY_JSON, bean2);
 	}
 }

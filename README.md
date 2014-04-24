@@ -1,14 +1,14 @@
 # ![Logo](https://github.com/xiaopansky/Android-HappyInject/raw/master/res/drawable-mdpi/ic_launcher.png) Android-HappyInject
 
-Android-HappyInject是用在Android上的一个注入类库
+HappyInject是用在Android上的一个注入类库，类似于RoboGuice，但比RoboGuice更轻量级。
 
 ##Features
->* 可注入Layout、View、Resource、Bundle Extra、Service、SharedPreferences、Fragment；
->* 提供了一系列的InjectActivity、InjectFragment、InjectService、InjectAppWidgetProvider、InjectAsyncTaskLoader、InjectBroadcastReceiver、InjectContentProvider、InjectLoader等超类，继承后可以使用注入功能；
->* 特别提供了InjectAdapter、InjectExpandableListAdapter通过注入来避免创建新的Adapter
+>* 可注入Layout、View、Resource、Bundle Extra、Service、SharedPreferences、Fragment等资源的注入；
+>* 特别提供了InjectAdapter、InjectExpandableListAdapter通过注入来避免创建新的Adapter；
+>* 比RoboGuice更轻量级，只提供了上述资源的注入功能，因此对应用的整体性能几乎没有影响。
 
 ##Usage
-####目前可继承并使用注入功能的超类分以下四类
+可继承的超类分以下四种：
 
 Activity：
 >* InjectAccountAuthenticatorActivity
@@ -43,7 +43,7 @@ Loader：
 >* InjectAsyncTaskLoader
 >* InjectLoader
 
-####可使用的注解有以下几种：
+#### 可使用的注解有以下几种：
 >* DisableInjector：禁用注入功能。因为注解功能默认是开启的，如果你不想使用注入的话就可是使用此注解来禁用注入功能；
 >* Inject：注入系统服务（通过getService()的各种Manager）或者ShardPreferences；在注入ShardPreferences时你可以通过sharedPreferencesName参数指定名称，不指定时将注入默认的ShardPreferences；
 >* InjectContentView：注入内容视图。适用于以下场合：
@@ -78,11 +78,13 @@ Loader：
     3. InjectExpandableListAdapter.GroupViewHolder
     3. InjectExpandableListAdapter.ChildViewHolder
     
-####示例
+#### Example
+##### Activity：
+假设我们要从MainActivity跳转到另外一个Activity，还要携带一些数据。
+首先来看MainActivity的实现
 ```java
-@InjectContentView(R.layout.activity_main)
-public class MainActivity extends InjectFragmentActivity{
-    public static final String PARAM_BYTE = "PARAM_BYTE";
+public class MainActivity extends FragmentActivity{
+	public static final String PARAM_BYTE = "PARAM_BYTE";
 	public static final String PARAM_BYTE_ARRAY = "PARAM_BYTE_ARRAY";
 	public static final String PARAM_SHORT = "PARAM_SHORT";
 	public static final String PARAM_SHORT_ARRAY = "PARAM_SHORT_ARRAY";
@@ -111,139 +113,486 @@ public class MainActivity extends InjectFragmentActivity{
 	public static final String KEY_STRING = "KEY_STRING";
 	public static final String KEY_STRING_SET = "KEY_STRING_SET";
 	public static final String KEY_JSON = "KEY_JSON";
-
-    @InjectView(R.id.text_main1) private TextView textView1;
-    @InjectView(R.id.text_main2) private TextView textView2;
-    @InjectView(R.id.text_main3) private TextView textView3;
-    @InjectView(R.id.text_main4) private TextView textView4;
-    @InjectView(R.id.text_main5) private TextView textView5;
-    
-    @InjectExtra(MainActivity.PARAM_BYTE) private byte byteField;
-    @InjectExtra(MainActivity.PARAM_BYTE_ARRAY) private byte[] byteFields;
-    @InjectExtra(MainActivity.PARAM_SHORT) private short shortField;
-    @InjectExtra(MainActivity.PARAM_SHORT_ARRAY) private short[] shortFields;
-    @InjectExtra(MainActivity.PARAM_INT) private int intField;
-    @InjectExtra(MainActivity.PARAM_INT_ARRAY) private int[] intFields;
-    @InjectExtra(MainActivity.PARAM_LONG) private long longField;
-    @InjectExtra(MainActivity.PARAM_LONG_ARRAY) private long[] longFields;
-    @InjectExtra(MainActivity.PARAM_CHAR) private char charField;
-    @InjectExtra(MainActivity.PARAM_CHAR_ARRAY) private char[] charFields;
-    @InjectExtra(MainActivity.PARAM_FLOAT) private float floatField;
-    @InjectExtra(MainActivity.PARAM_FLOAT_ARRAY) private float[] floatFields;
-    @InjectExtra(MainActivity.PARAM_DOUBLE) private double doubleField;
-    @InjectExtra(MainActivity.PARAM_DOUBLE_ARRAY) private double[] doubleFields;
-    @InjectExtra(MainActivity.PARAM_BOOLEAN) private boolean booleanField;
-    @InjectExtra(MainActivity.PARAM_BOOLEAN_ARRAY) private boolean[] booleanFields;
-    @InjectExtra(MainActivity.PARAM_STRING) private String stringField;
-    @InjectExtra(MainActivity.PARAM_STRING_ARRAY) private String[] stringFields;
-    @InjectExtra(MainActivity.PARAM_STRING_ARRAY_LIST) private ArrayList<String> stringFieldList;
-    @InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE) private CharSequence charSequenceField;
-    @InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY) private CharSequence[] charSequenceFields;
-	@InjectExtraJson(MainActivity.PARAM_STRING_JSON) private MyBean bean;
-    
-    @Inject private AccessibilityManager accessibilityManager;
-    @Inject private AccountManager accountManager;
-    @Inject private ActivityManager activityManager;
-    @Inject private AlarmManager alarmManager;
-    @Inject private AudioManager audioManager;
-    @Inject private ConnectivityManager connectivityManager;
-    @Inject private DevicePolicyManager devicePolicyManager;
-    @Inject private DropBoxManager dropBoxManager;
-    @Inject private InputMethodManager inputMethodManager;
-    @Inject private KeyguardManager keyguardManager;
-    @Inject private LayoutInflater layoutInflater;
-    @Inject private LocationManager locationManager;
-    @Inject private NotificationManager notificationManager;
-    @Inject private PowerManager powerManager;
-    @Inject private SearchManager searchManager;
-    @Inject private SensorManager sensorManager;
-    @Inject private TelephonyManager telephonyManager;
-    @Inject private UiModeManager uiModeManager;
-    @Inject private Vibrator vibrator;
-    @Inject private WallpaperManager wallpaperManager;
-    @Inject private WifiManager wifiManager;
-    @Inject private WindowManager windowManager;
-    
-    @InjectPreference(MainActivity.KEY_BOOLEAN) private boolean booleanPreference;
-    @InjectPreference(MainActivity.KEY_FLOAT) private float floatPreference;
-    @InjectPreference(MainActivity.KEY_INT) private int intPreference;
-    @InjectPreference(MainActivity.KEY_LONG) private long longPreference;
-    @InjectPreference(MainActivity.KEY_STRING) private String stringPreference;
-    @InjectPreference(MainActivity.KEY_STRING_SET) private Set<String> stringSetPreference;
-	@InjectPreferenceJson(MainActivity.KEY_JSON) private MyBean bean2;
-    
-    @InjectResource(R.integer.integer1) private int integer1;
-    @InjectResource(R.string.string1) private String string1;
-    @InjectResource(R.array.integer_array1) private int[] integers1;
-    @InjectResource(R.array.string_array1) private String[] strings1;
-    @InjectResource(R.drawable.ic_launcher) private Drawable launcherDrawable;
-    
-    @Override
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		StringBuffer extraStringBuffer = new StringBuffer("Extra注入结果：");
-		extraStringBuffer.append("\n").append("byteField").append("=").append(byteField);
-		extraStringBuffer.append("\n").append("byteField").append("=").append(byteField);
-		extraStringBuffer.append("\n").append("shortField").append("=").append(shortField);
-		extraStringBuffer.append("\n").append("intField").append("=").append(intField);
-		extraStringBuffer.append("\n").append("longField").append("=").append(longField);
-		extraStringBuffer.append("\n").append("charField").append("=").append(charField);
-		extraStringBuffer.append("\n").append("floatField").append("=").append(floatField);
-		extraStringBuffer.append("\n").append("doubleField").append("=").append(doubleField);
-		extraStringBuffer.append("\n").append("booleanField").append("=").append(booleanField);
-		extraStringBuffer.append("\n").append("stringField").append("=").append(stringField);
-		extraStringBuffer.append("\n").append("charSequenceField").append("=").append(charSequenceField);
-		extraStringBuffer.append("\n").append("byteFields").append("=").append(Arrays.toString(byteFields));
-		extraStringBuffer.append("\n").append("shortFields").append("=").append(Arrays.toString(shortFields));
-		extraStringBuffer.append("\n").append("intFields").append("=").append(Arrays.toString(intFields));
-		extraStringBuffer.append("\n").append("longFields").append("=").append(Arrays.toString(longFields));
-		extraStringBuffer.append("\n").append("charFields").append("=").append(Arrays.toString(charFields));
-		extraStringBuffer.append("\n").append("floatFields").append("=").append(Arrays.toString(floatFields));
-		extraStringBuffer.append("\n").append("doubleFields").append("=").append(Arrays.toString(doubleFields));
-		extraStringBuffer.append("\n").append("booleanFields").append("=").append(Arrays.toString(booleanFields));
-		extraStringBuffer.append("\n").append("stringFields").append("=").append(Arrays.toString(stringFields));
-		extraStringBuffer.append("\n").append("stringFieldList").append("=").append(stringFieldList.toString());
-		extraStringBuffer.append("\n").append("charSequenceFields").append("=").append(Arrays.toString(charSequenceFields));
-		extraStringBuffer.append("\n\n").append(bean.getName()).append(" ").append(bean.getSex()).append(" ").append(bean.getEmail());
-		textView2.setText(extraStringBuffer.toString());
+		ListView listView = new ListView(getBaseContext());
+		setContentView(listView);
 		
-		boolean success = true; 
-		try {
-			for(Field field : ReflectUtils.getFields(getClass(), true, false, false, false)){
-				if(field.isAnnotationPresent(Inject.class)){
-					field.setAccessible(true);
-					if(field.get(this) == null){
-						success = false;
+		// 先在SharedPreferences中放一些数据
+		PreferenceUtils.putBoolean(getBaseContext(), KEY_BOOLEAN, true);
+		PreferenceUtils.putFloat(getBaseContext(), KEY_FLOAT, 10000f);
+		PreferenceUtils.putInt(getBaseContext(), KEY_INT, 2000);
+		PreferenceUtils.putLong(getBaseContext(), KEY_LONG, 50000);
+		PreferenceUtils.putString(getBaseContext(), KEY_STRING, "Preference String");
+		Set<String> stringSet = new HashSet<String>();
+		stringSet.add("String Set 1");
+		stringSet.add("String Set 2");
+		stringSet.add("String Set 3");
+		stringSet.add("String Set 4");
+		PreferenceUtils.putStringSet(getBaseContext(), KEY_STRING_SET, stringSet);
+		MyBean bean2 = new MyBean();
+		bean2.setEmail("sky@xiaopan.me2");
+		bean2.setName("小潘2");
+		bean2.setSex("男2");
+		PreferenceUtils.putObject(getBaseContext(), KEY_JSON, bean2);
+		
+		// 然后初始化列表
+		String[] items = new String[]{"注入功能测试", "非注入功能测试", "FragmentDialog测试"};
+		listView.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, android.R.id.text1, items));
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Bundle bundle = new Bundle();
+				bundle.putBoolean(MainActivity.PARAM_BOOLEAN, true);
+				bundle.putBooleanArray(MainActivity.PARAM_BOOLEAN_ARRAY, new boolean[]{true, false, true});
+				bundle.putByte(MainActivity.PARAM_BYTE, (byte) 110);
+				bundle.putByteArray(MainActivity.PARAM_BYTE_ARRAY, new byte[]{111, 112, 113});
+				bundle.putChar(MainActivity.PARAM_CHAR, 'R');
+				bundle.putCharArray(MainActivity.PARAM_CHAR_ARRAY, new char[]{'c', 'h', 'a', 'r'});
+				bundle.putCharSequence(MainActivity.PARAM_CHAR_SEQUENCE, "CharSequence");
+				bundle.putCharSequenceArray(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY, new CharSequence[]{"Char", " ", "Sequence"});
+				bundle.putDouble(MainActivity.PARAM_DOUBLE, 12.00d);
+				bundle.putDoubleArray(MainActivity.PARAM_DOUBLE_ARRAY, new double[]{12.01d, 12.02d, 12.03d});
+				bundle.putFloat(MainActivity.PARAM_FLOAT, 13.00f);
+				bundle.putFloatArray(MainActivity.PARAM_FLOAT_ARRAY, new float[]{13.01f, 13.02f, 13.03f});
+				bundle.putInt(MainActivity.PARAM_INT, 120);
+				bundle.putIntArray(MainActivity.PARAM_INT_ARRAY, new int[]{121, 122, 123,});
+				bundle.putLong(MainActivity.PARAM_LONG, 12345);
+				bundle.putLongArray(MainActivity.PARAM_LONG_ARRAY, new long[]{12346, 12347, 12348});
+				bundle.putShort(MainActivity.PARAM_SHORT, (short) 2);
+				bundle.putShortArray(MainActivity.PARAM_SHORT_ARRAY, new short[]{3, 4, 5});
+				bundle.putString(MainActivity.PARAM_STRING, "String");
+				bundle.putStringArray(MainActivity.PARAM_STRING_ARRAY, new String[]{"String1", "String2", "String3"});
+				
+				// 将一个对象转换成JSON字符串放进Bundle中
+				MyBean bean = new MyBean();
+				bean.setEmail("sky@xiaopan.me");
+				bean.setName("小潘");
+				bean.setSex("男");
+				bundle.putString(PARAM_STRING_JSON, new Gson().toJson(bean));
+				
+				// 放一个字符串列表进去
+				ArrayList<String> stringList = new ArrayList<String>();
+				stringList.add("ArrayList String 1");
+				stringList.add("ArrayList String 2");
+				stringList.add("ArrayList String 3");
+				bundle.putStringArrayList(MainActivity.PARAM_STRING_ARRAY_LIST, stringList);
+				switch(position){
+					case 0 : 
+						Intent intent = new Intent(getBaseContext(), InjectTestActivity.class);
+						intent.putExtras(bundle);
+						startActivity(intent);
 						break;
-					}
+					case 1 : 
+						Intent intent2 = new Intent(getBaseContext(), NormalActivity.class);
+						intent2.putExtras(bundle);
+						startActivity(intent2);
+						break;
+					case 2 : 
+						new TestDialogFragment().show(getSupportFragmentManager(), ""); 
+						break;
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		textView3.setText("系统服务注入"+(success?"成功":"失败"));
-		
-		StringBuffer preferenceStringBuffer = new StringBuffer("Preference注入结果：");
-		preferenceStringBuffer.append("\n").append("booleanPreference").append("=").append(booleanPreference);
-		preferenceStringBuffer.append("\n").append("floatPreference").append("=").append(floatPreference);
-		preferenceStringBuffer.append("\n").append("intPreference").append("=").append(intPreference);
-		preferenceStringBuffer.append("\n").append("longPreference").append("=").append(longPreference);
-		preferenceStringBuffer.append("\n").append("stringPreference").append("=").append(stringPreference);
-		preferenceStringBuffer.append("\n").append("stringSetPreference").append("=").append(stringSetPreference);
-		preferenceStringBuffer.append("\n\n").append(bean2.getName()).append(" ").append(bean2.getSex()).append(" ").append(bean2.getEmail());
-		textView4.setText(preferenceStringBuffer.toString());
-		
-		StringBuffer resourceStringBuffer = new StringBuffer("Resource注入结果：");
-		resourceStringBuffer.append("\n").append("integer1").append("=").append(integer1);
-		resourceStringBuffer.append("\n").append("string1").append("=").append(string1);
-		resourceStringBuffer.append("\n").append("integers1").append("=").append(Arrays.toString(integers1));
-		resourceStringBuffer.append("\n").append("strings1").append("=").append(Arrays.toString(strings1));
-		textView5.setText(resourceStringBuffer);
-		textView5.setCompoundDrawablePadding(16);
-		textView5.setCompoundDrawablesWithIntrinsicBounds(launcherDrawable, null, null, null);
+		});
 	}
+}
 ```
+
+其次来看一下普通的实现方式是怎么接收数据的
+
+```java
+public class NormalActivity extends Activity {
+	private TextView textView1;
+	private TextView textView2;
+	private TextView textView3;
+	private TextView textView4;
+	private TextView textView5;
+
+	private byte byteField;
+	private byte[] byteFields;
+	private short shortField;
+	private short[] shortFields;
+	private int intField;
+	private int[] intFields;
+	private long longField;
+	private long[] longFields;
+	private char charField;
+	private char[] charFields;
+	private float floatField;
+	private float[] floatFields;
+	private double doubleField;
+	private double[] doubleFields;
+	private boolean booleanField;
+	private boolean[] booleanFields;
+	private String stringField;
+	private String[] stringFields;
+	private ArrayList<String> stringFieldList;
+	private CharSequence charSequenceField;
+	private CharSequence[] charSequenceFields;
+	private MyBean bean;
+	
+	private AccessibilityManager accessibilityManager;
+	private AccountManager accountManager;
+	private ActivityManager activityManager;
+	private AlarmManager alarmManager;
+	private AudioManager audioManager;
+	private ConnectivityManager connectivityManager;
+	private DevicePolicyManager devicePolicyManager;
+	private DropBoxManager dropBoxManager;
+	private InputMethodManager inputMethodManager;
+	private KeyguardManager keyguardManager;
+	private LayoutInflater layoutInflater;
+	private LocationManager locationManager;
+	private NotificationManager notificationManager;
+	private PowerManager powerManager;
+	private SearchManager searchManager;
+	private SensorManager sensorManager;
+	private TelephonyManager telephonyManager;
+	private UiModeManager uiModeManager;
+	private Vibrator vibrator;
+	private WallpaperManager wallpaperManager;
+	private WifiManager wifiManager;
+	private WindowManager windowManager;
+	
+	private boolean booleanPreference;
+	private float floatPreference;
+	private int intPreference;
+	private long longPreference;
+	private String stringPreference;
+	private Set<String> stringSetPreference;
+	private MyBean bean2;
+	
+	private int integer1;
+	private String string1;
+	private int[] integers1;
+	private String[] strings1;
+	private Drawable launcherDrawable;
+	
+	@SuppressLint("ServiceCast")
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		textView1 = (TextView) findViewById(R.id.text_main1);
+		textView2 = (TextView) findViewById(R.id.text_main2);
+		textView3 = (TextView) findViewById(R.id.text_main3);
+		textView4 = (TextView) findViewById(R.id.text_main4);
+		textView5 = (TextView) findViewById(R.id.text_main5);
+		
+		byteField = getIntent().getByteExtra(MainActivity.PARAM_BYTE, (byte)0);
+		byteFields = getIntent().getByteArrayExtra(MainActivity.PARAM_BYTE_ARRAY);
+		shortField = getIntent().getShortExtra(MainActivity.PARAM_SHORT, (short)0);
+		shortFields = getIntent().getShortArrayExtra(MainActivity.PARAM_SHORT_ARRAY);
+		intField = getIntent().getIntExtra(MainActivity.PARAM_INT, 0);
+		intFields= getIntent().getIntArrayExtra(MainActivity.PARAM_INT_ARRAY);
+		longField = getIntent().getLongExtra(MainActivity.PARAM_LONG, 0);
+		longFields = getIntent().getLongArrayExtra(MainActivity.PARAM_LONG_ARRAY);
+		charField = getIntent().getCharExtra(MainActivity.PARAM_CHAR, '0');
+		charFields = getIntent().getCharArrayExtra(MainActivity.PARAM_CHAR_ARRAY);
+		floatField = getIntent().getFloatExtra(MainActivity.PARAM_FLOAT, 0);
+		floatFields = getIntent().getFloatArrayExtra(MainActivity.PARAM_FLOAT_ARRAY);
+		doubleField = getIntent().getDoubleExtra(MainActivity.PARAM_DOUBLE, 0);
+		doubleFields = getIntent().getDoubleArrayExtra(MainActivity.PARAM_DOUBLE_ARRAY);
+		booleanField = getIntent().getBooleanExtra(MainActivity.PARAM_BOOLEAN, false);
+		booleanFields = getIntent().getBooleanArrayExtra(MainActivity.PARAM_BOOLEAN_ARRAY);
+		stringField = getIntent().getStringExtra(MainActivity.PARAM_STRING);
+		stringFields = getIntent().getStringArrayExtra(MainActivity.PARAM_STRING_ARRAY);
+		stringFieldList = getIntent().getStringArrayListExtra(MainActivity.PARAM_STRING_ARRAY_LIST);
+		charSequenceField = getIntent().getCharSequenceExtra(MainActivity.PARAM_CHAR_SEQUENCE);
+		charSequenceFields = getIntent().getCharSequenceArrayExtra(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY);
+		
+		bean = new Gson().fromJson(getIntent().getStringExtra(MainActivity.PARAM_STRING_JSON), MyBean.class);
+		
+		accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+		accountManager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
+		activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+		dropBoxManager = (DropBoxManager) getSystemService(Context.DROPBOX_SERVICE);
+		inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+		layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		wallpaperManager = (WallpaperManager) getSystemService(Context.WALLPAPER_SERVICE);
+		wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+		
+		booleanPreference = PreferenceUtils.getBoolean(getBaseContext(), MainActivity.KEY_BOOLEAN);
+		floatPreference = PreferenceUtils.getFloat(getBaseContext(), MainActivity.KEY_FLOAT);
+		intPreference = PreferenceUtils.getInt(getBaseContext(), MainActivity.KEY_INT);
+		longPreference = PreferenceUtils.getLong(getBaseContext(), MainActivity.KEY_LONG);
+		stringPreference = PreferenceUtils.getString(getBaseContext(), MainActivity.KEY_STRING);
+		stringSetPreference = PreferenceUtils.getStringSet(getBaseContext(), MainActivity.KEY_STRING_SET);
+		bean2 = PreferenceUtils.getObject(getBaseContext(), MainActivity.KEY_JSON, MyBean.class);
+		
+		integer1 = getResources().getInteger(R.integer.integer1);
+		string1 = getResources().getString(R.string.string1);
+		integers1 = getResources().getIntArray(R.array.integer_array1);
+		strings1 = getResources().getStringArray(R.array.string_array1);
+		launcherDrawable = getResources().getDrawable(R.drawable.ic_launcher);
+		
+		//数据处理...
+	}
+}
+```
+
+最后看一下怎么采用注入的方式来接收数据
+
+```java
+@InjectContentView(R.layout.activity_main)
+public class InjectTestActivity extends InjectActivity {
+	@InjectView(R.id.text_main1) private TextView textView1;
+	@InjectView(R.id.text_main2) private TextView textView2;
+	@InjectView(R.id.text_main3) private TextView textView3;
+	@InjectView(R.id.text_main4) private TextView textView4;
+	@InjectView(R.id.text_main5) private TextView textView5;
+
+	@InjectExtra(MainActivity.PARAM_BYTE) private byte byteField;
+	@InjectExtra(MainActivity.PARAM_BYTE_ARRAY) private byte[] byteFields;
+	@InjectExtra(MainActivity.PARAM_SHORT) private short shortField;
+	@InjectExtra(MainActivity.PARAM_SHORT_ARRAY) private short[] shortFields;
+	@InjectExtra(MainActivity.PARAM_INT) private int intField;
+	@InjectExtra(MainActivity.PARAM_INT_ARRAY) private int[] intFields;
+	@InjectExtra(MainActivity.PARAM_LONG) private long longField;
+	@InjectExtra(MainActivity.PARAM_LONG_ARRAY) private long[] longFields;
+	@InjectExtra(MainActivity.PARAM_CHAR) private char charField;
+	@InjectExtra(MainActivity.PARAM_CHAR_ARRAY) private char[] charFields;
+	@InjectExtra(MainActivity.PARAM_FLOAT) private float floatField;
+	@InjectExtra(MainActivity.PARAM_FLOAT_ARRAY) private float[] floatFields;
+	@InjectExtra(MainActivity.PARAM_DOUBLE) private double doubleField;
+	@InjectExtra(MainActivity.PARAM_DOUBLE_ARRAY) private double[] doubleFields;
+	@InjectExtra(MainActivity.PARAM_BOOLEAN) private boolean booleanField;
+	@InjectExtra(MainActivity.PARAM_BOOLEAN_ARRAY) private boolean[] booleanFields;
+	@InjectExtra(MainActivity.PARAM_STRING) private String stringField;
+	@InjectExtra(MainActivity.PARAM_STRING_ARRAY) private String[] stringFields;
+	@InjectExtra(MainActivity.PARAM_STRING_ARRAY_LIST) private ArrayList<String> stringFieldList;
+	@InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE) private CharSequence charSequenceField;
+	@InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY) private CharSequence[] charSequenceFields;
+	@InjectExtraJson(MainActivity.PARAM_STRING_JSON) private MyBean bean;
+
+	@Inject private AccessibilityManager accessibilityManager;
+	@Inject private AccountManager accountManager;
+	@Inject private ActivityManager activityManager;
+	@Inject private AlarmManager alarmManager;
+	@Inject private AudioManager audioManager;
+	@Inject private ConnectivityManager connectivityManager;
+	@Inject private DevicePolicyManager devicePolicyManager;
+	@Inject private DropBoxManager dropBoxManager;
+	@Inject private InputMethodManager inputMethodManager;
+	@Inject private KeyguardManager keyguardManager;
+	@Inject private LayoutInflater layoutInflater;
+	@Inject private LocationManager locationManager;
+	@Inject private NotificationManager notificationManager;
+	@Inject private PowerManager powerManager;
+	@Inject private SearchManager searchManager;
+	@Inject private SensorManager sensorManager;
+	@Inject private TelephonyManager telephonyManager;
+	@Inject private UiModeManager uiModeManager;
+	@Inject private Vibrator vibrator;
+	@Inject private WallpaperManager wallpaperManager;
+	@Inject private WifiManager wifiManager;
+	@Inject private WindowManager windowManager;
+	
+	@InjectPreference(MainActivity.KEY_BOOLEAN) private boolean booleanPreference;
+	@InjectPreference(MainActivity.KEY_FLOAT) private float floatPreference;
+	@InjectPreference(MainActivity.KEY_INT) private int intPreference;
+	@InjectPreference(MainActivity.KEY_LONG) private long longPreference;
+	@InjectPreference(MainActivity.KEY_STRING) private String stringPreference;
+	@InjectPreference(MainActivity.KEY_STRING_SET) private Set<String> stringSetPreference;
+	@InjectPreferenceJson(MainActivity.KEY_JSON) private MyBean bean2;
+	
+	@InjectResource(R.integer.integer1) private int integer1;
+	@InjectResource(R.string.string1) private String string1;
+	@InjectResource(R.array.integer_array1) private int[] integers1;
+	@InjectResource(R.array.string_array1) private String[] strings1;
+	@InjectResource(R.drawable.ic_launcher) private Drawable launcherDrawable;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		//数据处理...
+	}
+}
+```
+
+这么一对比发现注入方式太简洁了，简直无与伦比了。其它的InjectService、InjectBroadcastReceiver等的使用方式同Activity类似。
+
+##### InjectFragment
+同样下来看一下通常的Fragment的实现：
+```java
+public class InformationListFragment extends Fragment {
+	public static final String PARAM_REQUIRED_STRING_TYPE = "PARAM_REQUIRED_STRING_MEETING_TYPE";
+
+	private MyClickLoadListView listView;
+    private String type = null;
+
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+		if(getArguments() != null){
+		    type = getArguments().getString(PARAM_REQUIRED_STRING_TYPE);
+		}
+	}
+
+    @Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_information_list, null);
+        listView = (ListView) rootView.findViewById(R.id.listView_news);
+		return rootView;
+	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		
+		// 数据处理...
+	}
+}
+```
+
+然后来看一下InjectFragment的实现：
+```java
+@InjectContentView(R.layout.fragment_information_list)
+public class InformationListFragment extends MyFragment {
+	public static final String PARAM_REQUIRED_STRING_TYPE = "PARAM_REQUIRED_STRING_MEETING_TYPE";
+
+	@InjectView(R.id.listView_news) private MyClickLoadListView listView;
+    @InjectExtra(PARAM_REQUIRED_STRING_TYPE) private String type = null;
+
+    @Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		
+		// 数据处理...
+	}
+}
+```
+
+##### InjectAdapter
+首先来看一下普通的Adapter实现方式：
+```java
+public class ExpertAdapter extends BaseAdapter {
+	private Context context;
+	private List<Expert> experts;
+	private OnClickAskQuestionListener onClickAskQuestionListener;
+	private Expert expert;
+	
+	public ExpertAdapter(Context context, List<Expert> experts, OnClickAskQuestionListener onClickAskQuestionListener){
+		this.context = context;
+		this.experts = experts;
+		this.onClickAskQuestionListener = onClickAskQuestionListener;
+	}
+	
+	@Override
+	public int getCount() {
+		return experts.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return experts.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewHolder viewHolder;
+		if(convertView == null){
+			convertView = LayoutInflater.from(context).inflate(R.layout.list_item_expert, null);
+			viewHolder = new ViewHolder();
+			viewHolder.headPortraitImage = (ImageView) convertView.findViewById(R.id.image_expertItem_headPortrait);
+			viewHolder.nameText = (TextView) convertView.findViewById(R.id.text_expertItem_name);
+			viewHolder.majorText = (TextView) convertView.findViewById(R.id.text_expertItem_major);
+			viewHolder.askQuestion = (Button) convertView.findViewById(R.id.button_expertItem_askQuestion);
+			convertView.setTag(viewHolder);
+		}else{
+			viewHolder = (ViewHolder) convertView.getTag();
+		}
+		
+		expert = experts.get(position);
+		
+		ImageLoader.getInstance(context).display(expert.getHeadPortraitUrl(), viewHolder.headPortraitImage, OptionsType.DEFAULT);
+		viewHolder.nameText.setText(expert.getName());
+		viewHolder.majorText.setText(context.getString(R.string.fromKey_major)+expert.getMajor());
+		
+		return convertView;
+	}
+
+	private class ViewHolder{
+		ImageView headPortraitImage;
+		TextView nameText;
+		TextView majorText;
+		Button askQuestion;
+	}
+	
+	public interface OnClickAskQuestionListener{
+		public void onClickAskQuestion(View view, Expert expert);
+	}
+}
+```
+然后你是这样用的
+```java
+List<Expert> experts = ...;
+listView.setAdapter(new ExpertAdapter(getBaseContext(), experts));
+```
+
+那么采用InjectAdapter就会方便很多，可以让你省去频繁创建Adapter的苦恼，并且思路更清晰。
+首先你需要创建一个ViewHolder，实现InjectAdapter.ViewHolder接口，来影射你的R.layout.list_item_expert布局如下：
+```java
+@InjectContentView(R.layout.list_item_expert)
+public static class ExpertViewHolder implements InjectAdapter.ViewHolder<Expert>{
+    @InjectView(R.id.image_expertItem_headPortrait) ImageView headPortraitImage;
+    @InjectView(R.id.text_expertItem_name) TextView nameText;
+    @InjectView(R.id.text_expertItem_major) TextView majorText;
+    @InjectView(R.id.button_expertItem_askQuestion) Button askQuestion;
+
+    @Override
+    public void setValues(Context context, Expert item) {
+        ImageLoader.getInstance(context).display(item.getHeadPortraitUrl(), headPortraitImage, OptionsType.DEFAULT);
+        nameText.setText(item.getName());
+        majorText.setText(context.getString(R.string.fromKey_major)+item.getMajor());
+    }
+}
+```
+然后你就可以直接使用InjectAdapter了，如下：
+```java
+List<Expert> experts = ...;
+listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext(), ExpertViewHolder.class, experts));
+```
+如果你还需要为askQuestion按钮绑定点击事件，那么同样很简单，如下：
+```java
+List<Expert> experts = ...;
+listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext(), ExpertViewHolder.class, experts, new InjectAdapter.BindingEventListener<ExpertViewHolder>() {
+    @Override
+    public void bindingEvent(ExpertViewHolder viewHolder) {
+        viewHolder.askQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 处理点击事件...
+            }
+        });
+    }
+}));
+```
+InjectExpandableListAdapter的用法同InjectAdapter一样。
 
 ##Downloads
 [android-happy-inject-1.0.0.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.0.0.jar)
