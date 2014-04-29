@@ -26,13 +26,17 @@ import android.app.Service;
 public abstract class InjectService extends Service{
 	private Injector injector;
 	
-    public InjectService() {
-        super();
-    	if(!getClass().isAnnotationPresent(DisableInjector.class)){
-        	injector = new Injector(this, getBaseContext(), null);
+	@Override
+	public void onCreate() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+        	injector = new Injector(this);
+        	injector.injectKnowMembers(getBaseContext());
+        	injector.injectPreferenceMembers(getBaseContext());
+        	injector.injectResourceMembers(getBaseContext());
         }
-        if(injector != null){
-        	injector.injectOtherMembers();
-		}
-    }
+	}
+
+	public Injector getInjector() {
+		return injector;
+	}
 }

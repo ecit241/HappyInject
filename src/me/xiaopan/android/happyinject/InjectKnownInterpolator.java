@@ -91,17 +91,15 @@ import android.view.textservice.TextServicesManager;
  * <br> WifiP2pManager
  */
 public class InjectKnownInterpolator implements InjectInterpolator {
-	private Object object;
 	private Context context;
 
-	public InjectKnownInterpolator(Object object, Context context) {
-		this.object = object;
+	public InjectKnownInterpolator(Context context) {
 		this.context = context;
 	}
 
 	@Override
 	@SuppressLint("NewApi")
-	public void onInject(Field field) {
+	public void onInject(Field field, Object object) {
 		Class<?> fieldType = field.getType();
 		try {
 			if(SharedPreferences.class.isAssignableFrom(fieldType)){

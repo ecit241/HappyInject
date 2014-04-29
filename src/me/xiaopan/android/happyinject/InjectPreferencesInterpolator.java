@@ -19,16 +19,14 @@ import com.google.gson.reflect.TypeToken;
  * 注入SharedPreferences中的参数
  */
 public class InjectPreferencesInterpolator implements InjectInterpolator {
-	private Object object;
 	private Context context;
 	
-	public InjectPreferencesInterpolator(Object object, Context context) {
-		this.object = object;
+	public InjectPreferencesInterpolator(Context context) {
 		this.context = context;
 	}
 
 	@Override
-	public void onInject(Field field) {
+	public void onInject(Field field, Object object) {
 		InjectPreference injectPreference = field.getAnnotation(InjectPreference.class);
 		Class<?> fieldType = field.getType();
 		try {
@@ -72,13 +70,9 @@ public class InjectPreferencesInterpolator implements InjectInterpolator {
 	
 	/**
 	 * 从指定的Preference中取出一个Set<String>，如果当前系统的SDK版本小于11，则会先取出JSON字符串然后再转换成Set<String>
-	 * @param context
-	 * @param key
-	 * @param defaultVaule
-	 * @return
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static final Set<String> getStringSet(SharedPreferences preferences, String key, Set<String> defaultVaule){
+	public static Set<String> getStringSet(SharedPreferences preferences, String key, Set<String> defaultVaule){
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 			return preferences.getStringSet(key, defaultVaule);
 		}else{
@@ -92,12 +86,8 @@ public class InjectPreferencesInterpolator implements InjectInterpolator {
 	
 	/**
 	 * 从指定的Preference中取出一个对象
-	 * @param preferences
-	 * @param key
-	 * @param typeofT
-	 * @return
 	 */
-	public static final <T> T getObject(SharedPreferences preferences, String key, Type typeofT){
+	public static <T> T getObject(SharedPreferences preferences, String key, Type typeofT){
 		String configJson = preferences.getString(key, null);
 		if(configJson != null && !"".equals(configJson.trim())){
 			return new Gson().fromJson(configJson, typeofT);

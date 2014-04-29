@@ -48,7 +48,10 @@ public abstract class InjectActivity extends Activity{
 			if(injectContentView != null && injectContentView.value() > 0){
 				setContentView(injectContentView.value());
 			}
-			injector.injectOtherMembers();
+			injector.injectExtraMembers(getIntent().getExtras());
+			injector.injectKnowMembers(getBaseContext());
+			injector.injectPreferenceMembers(getBaseContext());
+			injector.injectResourceMembers(getBaseContext());
 		}
 	}
 	
@@ -56,7 +59,11 @@ public abstract class InjectActivity extends Activity{
 	public void onContentChanged() {
 		super.onContentChanged();
 		if(injector != null){
-			injector.injectViewMembers();
+			injector.injectViewMembers(getWindow().getDecorView());
 		}
+	}
+
+	public Injector getInjector() {
+		return injector;
 	}
 }

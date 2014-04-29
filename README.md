@@ -590,9 +590,9 @@ listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext()
 InjectExpandableListAdapter的用法同InjectAdapter一样。
 
 ## Downloads
->* [android-happy-inject-1.0.0.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.0.0.jar)
+>* [android-happy-inject-1.1.0.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.1.0.jar)
 
->* [android-happy-inject-1.0.0-with-src.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.0.0-with-src.jar)（包含源码）
+>* [android-happy-inject-1.1.0-with-src.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.1.0-with-src.jar)（包含源码）
 
 ## Depend
 >* [android-support-v4.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/android-support-v4.jar) 可选的。如果你要使用InjectFragmentActivity、InjectFragment、InjectListFeagment、InjectDialogFragment就必须要引入此类库
@@ -601,6 +601,11 @@ InjectExpandableListAdapter的用法同InjectAdapter一样。
 >* [gson-2.2.2.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/gson-2.2.2.jar) 可选的。如果你要使用InjectExtraJson、InjectPreferenceJson就必须要引入此类库
 
 >*  如果你要使用InjectMapActivity就必须选择Google APIs
+
+## Change Log
+### 1.1.0
+>* 全面优化注入逻辑，新逻辑为一次性将不同类型的注入全部分好类，到注入的时候，将不再有逻辑判断直接循环注入
+>* 修复InjectService和InjectIntentService注入失败的BUG，原因是应该在onCreate()方法中注入，却写成了在构造函数中注入
 
 ## License
 ```java

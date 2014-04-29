@@ -9,16 +9,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class InjectExtraJsonInterpolator implements InjectInterpolator {
-	private Object object;
 	private Bundle bundle;
 	
-	public InjectExtraJsonInterpolator(Object object, Bundle bundle) {
-		this.object = object;
+	public InjectExtraJsonInterpolator(Bundle bundle) {
 		this.bundle = bundle;
 	}
 
 	@Override
-	public void onInject(Field field) {
+	public void onInject(Field field, Object object) {
 		if(bundle != null){
 			InjectExtraJson injectExtraJson = field.getAnnotation(InjectExtraJson.class);
 			if(injectExtraJson.value() != null && !"".equals(injectExtraJson.value().trim())){

@@ -25,11 +25,19 @@ import android.support.v4.content.AsyncTaskLoader;
  * 提供注入功能的提供注入功能的AsyncTaskLoader
  */
 public abstract class InjectAsyncTaskLoader<T> extends AsyncTaskLoader<T> {
+	private Injector injector;
 
     public InjectAsyncTaskLoader(Context context) {
         super(context);
         if(!getClass().isAnnotationPresent(DisableInjector.class)){
-        	new Injector(this, context, null).injectOtherMembers();
+        	injector = new Injector(this);
+			injector.injectKnowMembers(context);
+			injector.injectPreferenceMembers(context);
+			injector.injectResourceMembers(context);
         }
     }
+
+	public Injector getInjector() {
+		return injector;
+	}
 }

@@ -26,11 +26,19 @@ import android.content.Context;
  * 提供注入功能的提供注入功能的AppWidgetProvider
  */
 public abstract class InjectAppWidgetProvider extends AppWidgetProvider {
+	private Injector injector;
 	
 	@Override
 	public final void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-			new Injector(this, context, null).injectOtherMembers();
+			injector = new Injector(this);
+			injector.injectKnowMembers(context);
+			injector.injectPreferenceMembers(context);
+			injector.injectResourceMembers(context);
 		}
+	}
+
+	public Injector getInjector() {
+		return injector;
 	}
 }

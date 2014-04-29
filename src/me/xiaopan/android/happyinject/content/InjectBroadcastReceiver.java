@@ -26,11 +26,20 @@ import android.content.Intent;
  * 提供注入功能的BroadcastReceiver
  */
 public abstract class InjectBroadcastReceiver extends BroadcastReceiver {
+	private Injector injector;
 
     @Override
     public final void onReceive(Context context, Intent intent) {
     	if(!getClass().isAnnotationPresent(DisableInjector.class)){
-    		new Injector(this, context, intent.getExtras()).injectOtherMembers();
+    		injector = new Injector(this);
+    		injector.injectExtraMembers(intent.getExtras());
+			injector.injectKnowMembers(context);
+			injector.injectPreferenceMembers(context);
+			injector.injectResourceMembers(context);
     	}
     }
+
+	public Injector getInjector() {
+		return injector;
+	}
 }

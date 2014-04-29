@@ -6,16 +6,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class InjectExtraInterpolator implements InjectInterpolator {
-	private Object object;
 	private Bundle bundle;
 	
-	public InjectExtraInterpolator(Object object, Bundle bundle) {
-		this.object = object;
+	public InjectExtraInterpolator(Bundle bundle) {
 		this.bundle = bundle;
 	}
 
 	@Override
-	public void onInject(Field field) {
+	public void onInject(Field field, Object object) {
 		if(bundle != null){
 			InjectExtra injectExtra = field.getAnnotation(InjectExtra.class);
 			if(injectExtra.value() != null && !"".equals(injectExtra.value().trim())){

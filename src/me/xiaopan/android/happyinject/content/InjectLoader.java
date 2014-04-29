@@ -25,11 +25,19 @@ import android.support.v4.content.Loader;
  * 提供注入功能的Loader
  */
 public abstract class InjectLoader<T> extends Loader<T> {
+	private Injector injector;
 
     public InjectLoader(Context context) {
         super(context);
         if(!getClass().isAnnotationPresent(DisableInjector.class)){
-        	new Injector(this, context, null).injectOtherMembers();
+        	injector = new Injector(this);
+			injector.injectKnowMembers(context);
+			injector.injectPreferenceMembers(context);
+			injector.injectResourceMembers(context);
         }
     }
+
+	public Injector getInjector() {
+		return injector;
+	}
 }

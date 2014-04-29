@@ -26,13 +26,22 @@ import android.app.IntentService;
 public abstract class InjectIntentService extends IntentService{
 	private Injector injector;
 	
-    public InjectIntentService(String name) {
-        super(name);
-        if(!getClass().isAnnotationPresent(DisableInjector.class)){
-        	injector = new Injector(this, getBaseContext(), null);
+	public InjectIntentService(String name) {
+		super(name);
+	}
+
+	@Override
+	public void onCreate() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+        	injector = new Injector(this);
+        	injector.injectKnowMembers(getBaseContext());
+        	injector.injectPreferenceMembers(getBaseContext());
+        	injector.injectResourceMembers(getBaseContext());
         }
-        if(injector != null){
-        	injector.injectOtherMembers();
-		}
-    }
+	}
+
+	public Injector getInjector() {
+		return injector;
+	}
 }
+

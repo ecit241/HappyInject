@@ -2,28 +2,19 @@ package me.xiaopan.android.happyinject;
 
 import java.lang.reflect.Field;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
 public class InjectViewInterpolator implements InjectInterpolator{
-	private Object object;
-	private OnFindViewInterpolator onFindViewInterpolator;
+	private View rootView;
 	
-	public InjectViewInterpolator(Activity activity) {
-		this.object = activity;
-		this.onFindViewInterpolator = new ActivityFindInjectInterpolator(activity);
+	public InjectViewInterpolator(View rootView) {
+		this.rootView = rootView;
 	}
 	
-	public InjectViewInterpolator(Fragment fragment) {
-		this.object = fragment;
-		this.onFindViewInterpolator = new FragmentFindViewInterpolator(fragment);
-	}
-
-	public void onInject(Field field){
+	public void onInject(Field field, Object object){
 		try {
-			View view = onFindViewInterpolator.onFindViewByeId(field.getAnnotation(InjectView.class).value());
+			View view = rootView.findViewById(field.getAnnotation(InjectView.class).value());
 			if(view != null){
 				field.setAccessible(true);
 				field.set(object, view);
@@ -31,36 +22,6 @@ public class InjectViewInterpolator implements InjectInterpolator{
 		} catch (Exception e) {
 			Log.w(getClass().getSimpleName(), "Inject"+object.getClass().getSimpleName()+"."+field.getName()+"failure");
 			e.printStackTrace();
-		}
-	}
-	
-	private interface OnFindViewInterpolator{
-		public View onFindViewByeId(int viewId);
-	}
-	
-	private class ActivityFindInjectInterpolator implements OnFindViewInterpolator{
-		private Activity activity;
-		
-		public ActivityFindInjectInterpolator(Activity activity) {
-			this.activity = activity;
-		}
-
-		@Override
-		public View onFindViewByeId(int viewId) {
-			return activity.findViewById(viewId);
-		}
-	}
-	
-	private class FragmentFindViewInterpolator implements OnFindViewInterpolator{
-		private Fragment fragment;
-		
-		public FragmentFindViewInterpolator(Fragment fragment) {
-			this.fragment = fragment;
-		}
-
-		@Override
-		public View onFindViewByeId(int viewId) {
-			return fragment.getView().findViewById(viewId);
 		}
 	}
 }

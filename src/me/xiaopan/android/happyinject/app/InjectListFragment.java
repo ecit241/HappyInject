@@ -36,7 +36,10 @@ public class InjectListFragment extends ListFragment{
 		super.onCreate(savedInstanceState);
 		if(!getClass().isAnnotationPresent(DisableInjector.class)){
 			injector = new Injector(this);
-			injector.injectOtherMembers();
+			injector.injectExtraMembers(getArguments());
+			injector.injectKnowMembers(getActivity().getBaseContext());
+			injector.injectPreferenceMembers(getActivity().getBaseContext());
+			injector.injectResourceMembers(getActivity().getBaseContext());
 		}
 	}
 
@@ -54,7 +57,11 @@ public class InjectListFragment extends ListFragment{
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		if(injector != null){
-			injector.injectViewMembers();
+			injector.injectViewMembers(getView());
 		}
+	}
+
+	public Injector getInjector() {
+		return injector;
 	}
 }

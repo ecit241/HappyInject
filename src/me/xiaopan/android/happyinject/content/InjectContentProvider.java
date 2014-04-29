@@ -25,12 +25,20 @@ import android.content.ContentProvider;
  * <br>如果你继承了这个类，请务必重写onCrate()方法并调用super.onCreate()方法
  */
 public abstract class InjectContentProvider extends ContentProvider {
+	private Injector injector;
 
     @Override
     public boolean onCreate() {
     	if(!getClass().isAnnotationPresent(DisableInjector.class)){
-    		new Injector(this, getContext(), null).injectOtherMembers();
+    		injector = new Injector(this);
+			injector.injectKnowMembers(getContext());
+			injector.injectPreferenceMembers(getContext());
+			injector.injectResourceMembers(getContext());
     	}
         return true;
     }
+
+	public Injector getInjector() {
+		return injector;
+	}
 }

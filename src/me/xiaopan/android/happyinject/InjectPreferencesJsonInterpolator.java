@@ -14,16 +14,14 @@ import com.google.gson.GsonBuilder;
  * 注入SharedPreferences中的Json对象
  */
 public class InjectPreferencesJsonInterpolator implements InjectInterpolator {
-	private Object object;
 	private Context context;
 	
-	public InjectPreferencesJsonInterpolator(Object object, Context context) {
-		this.object = object;
+	public InjectPreferencesJsonInterpolator(Context context) {
 		this.context = context;
 	}
 
 	@Override
-	public void onInject(Field field) {
+	public void onInject(Field field, Object object) {
 		InjectPreferenceJson injectPreference = field.getAnnotation(InjectPreferenceJson.class);
 		if(injectPreference.value() != null && !"".equals(injectPreference.value().trim())){
 			SharedPreferences sharedPreferences = null;

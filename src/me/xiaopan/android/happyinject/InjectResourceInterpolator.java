@@ -11,16 +11,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 public class InjectResourceInterpolator implements InjectInterpolator {
-	private Object object;
 	private Context context;
 
-	public InjectResourceInterpolator(Object object, Context context) {
-		this.object = object;
+	public InjectResourceInterpolator(Context context) {
 		this.context = context;
 	}
 
 	@Override
-	public void onInject(Field field) {
+	public void onInject(Field field, Object object) {
 		InjectResource injectResource = field.getAnnotation(InjectResource.class);
 		Class<?> fieldType = field.getType();
 		try {
