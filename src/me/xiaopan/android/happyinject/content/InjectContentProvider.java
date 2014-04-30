@@ -26,11 +26,16 @@ import android.content.ContentProvider;
  */
 public abstract class InjectContentProvider extends ContentProvider {
 	private Injector injector;
+	
+	public InjectContentProvider() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
 
     @Override
     public boolean onCreate() {
-    	if(!getClass().isAnnotationPresent(DisableInjector.class)){
-    		injector = new Injector(this);
+    	if(injector != null){
 			injector.injectKnowMembers(getContext());
 			injector.injectPreferenceMembers(getContext());
 			injector.injectResourceMembers(getContext());

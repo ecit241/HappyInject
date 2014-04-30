@@ -30,6 +30,12 @@ import android.view.WindowManager;
 public abstract class InjectActivity extends Activity{
 	private Injector injector;
 	
+	public InjectActivity() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -42,8 +48,7 @@ public abstract class InjectActivity extends Activity{
 			getWindow().addFlags(Window.FEATURE_NO_TITLE);
 		}
 		
-		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-			injector = new Injector(this);
+		if(injector != null){
 			InjectContentView injectContentView = getClass().getAnnotation(InjectContentView.class);
 			if(injectContentView != null && injectContentView.value() > 0){
 				setContentView(injectContentView.value());

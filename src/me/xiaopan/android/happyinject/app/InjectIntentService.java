@@ -28,12 +28,14 @@ public abstract class InjectIntentService extends IntentService{
 	
 	public InjectIntentService(String name) {
 		super(name);
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
 	}
 
 	@Override
 	public void onCreate() {
-		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-        	injector = new Injector(this);
+		if(injector != null){
         	injector.injectKnowMembers(getBaseContext());
         	injector.injectPreferenceMembers(getBaseContext());
         	injector.injectResourceMembers(getBaseContext());

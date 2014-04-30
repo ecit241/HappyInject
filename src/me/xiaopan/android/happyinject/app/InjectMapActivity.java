@@ -31,6 +31,12 @@ import com.google.android.maps.MapActivity;
 public abstract class InjectMapActivity extends MapActivity{
 	private Injector injector;
 	
+	public InjectMapActivity() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -43,8 +49,7 @@ public abstract class InjectMapActivity extends MapActivity{
 			getWindow().addFlags(Window.FEATURE_NO_TITLE);
 		}
 		
-		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-			injector = new Injector(this);
+		if(injector != null){
 			InjectContentView injectContentView = getClass().getAnnotation(InjectContentView.class);
 			if(injectContentView != null && injectContentView.value() > 0){
 				setContentView(injectContentView.value());

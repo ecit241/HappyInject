@@ -31,11 +31,16 @@ import android.view.ViewGroup;
 public class InjectDialogFragment extends DialogFragment{
 	private Injector injector;
 	
+	public InjectDialogFragment() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-			injector = new Injector(this);
+		if(injector != null){
 			injector.injectExtraMembers(getArguments());
 			injector.injectKnowMembers(getActivity().getBaseContext());
 			injector.injectPreferenceMembers(getActivity().getBaseContext());

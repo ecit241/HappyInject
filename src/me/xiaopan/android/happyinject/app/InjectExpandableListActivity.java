@@ -30,6 +30,12 @@ import android.view.WindowManager;
 public abstract class InjectExpandableListActivity extends ExpandableListActivity{
 	private Injector injector;
 	
+	public InjectExpandableListActivity() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -42,8 +48,7 @@ public abstract class InjectExpandableListActivity extends ExpandableListActivit
 			getWindow().addFlags(Window.FEATURE_NO_TITLE);
 		}
 		
-		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-			injector = new Injector(this);
+		if(injector != null){
 			InjectContentView injectContentView = getClass().getAnnotation(InjectContentView.class);
 			if(injectContentView != null && injectContentView.value() > 0){
 				setContentView(injectContentView.value());

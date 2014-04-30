@@ -28,10 +28,15 @@ import android.content.Context;
 public abstract class InjectAppWidgetProvider extends AppWidgetProvider {
 	private Injector injector;
 	
-	@Override
-	public final void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+	public InjectAppWidgetProvider() {
 		if(!getClass().isAnnotationPresent(DisableInjector.class)){
 			injector = new Injector(this);
+		}
+	}
+	
+	@Override
+	public final void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+		if(injector != null){
 			injector.injectKnowMembers(context);
 			injector.injectPreferenceMembers(context);
 			injector.injectResourceMembers(context);

@@ -30,6 +30,12 @@ import android.view.WindowManager;
 public abstract class InjectActionBarActivity extends ActionBarActivity{
 	private Injector injector;
 	
+	public InjectActionBarActivity() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -42,8 +48,7 @@ public abstract class InjectActionBarActivity extends ActionBarActivity{
 			getWindow().addFlags(Window.FEATURE_NO_TITLE);
 		}
 		
-		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-			injector = new Injector(this);
+		if(injector != null){
 			InjectContentView injectContentView = getClass().getAnnotation(InjectContentView.class);
 			if(injectContentView != null && injectContentView.value() > 0){
 				setContentView(injectContentView.value());
@@ -57,7 +62,7 @@ public abstract class InjectActionBarActivity extends ActionBarActivity{
 	
 	@Override
 	public void onSupportContentChanged() {
-		super.onContentChanged();
+		super.onSupportContentChanged();
 		if(injector != null){
 			injector.injectViewMembers(getWindow().getDecorView());
 		}

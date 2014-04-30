@@ -30,6 +30,12 @@ import android.view.WindowManager;
 public abstract class InjectFragmentActivity extends FragmentActivity{
 	private Injector injector;
 	
+	public InjectFragmentActivity() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -42,8 +48,7 @@ public abstract class InjectFragmentActivity extends FragmentActivity{
 			getWindow().addFlags(Window.FEATURE_NO_TITLE);
 		}
 		
-		if(!getClass().isAnnotationPresent(DisableInjector.class)){
-			injector = new Injector(this);
+		if(injector != null){
 			InjectContentView injectContentView = getClass().getAnnotation(InjectContentView.class);
 			if(injectContentView != null && injectContentView.value() > 0){
 				setContentView(injectContentView.value());
@@ -52,7 +57,6 @@ public abstract class InjectFragmentActivity extends FragmentActivity{
 			injector.injectKnowMembers(getBaseContext());
 			injector.injectPreferenceMembers(getBaseContext());
 			injector.injectResourceMembers(getBaseContext());
-			injector.injectFragmentMembers(getSupportFragmentManager());
 		}
 	}
 	

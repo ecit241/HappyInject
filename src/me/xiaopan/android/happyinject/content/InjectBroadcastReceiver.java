@@ -27,11 +27,16 @@ import android.content.Intent;
  */
 public abstract class InjectBroadcastReceiver extends BroadcastReceiver {
 	private Injector injector;
+	
+	public InjectBroadcastReceiver() {
+		if(!getClass().isAnnotationPresent(DisableInjector.class)){
+			injector = new Injector(this);
+		}
+	}
 
     @Override
     public final void onReceive(Context context, Intent intent) {
-    	if(!getClass().isAnnotationPresent(DisableInjector.class)){
-    		injector = new Injector(this);
+    	if(injector != null){
     		injector.injectExtraMembers(intent.getExtras());
 			injector.injectKnowMembers(context);
 			injector.injectPreferenceMembers(context);
