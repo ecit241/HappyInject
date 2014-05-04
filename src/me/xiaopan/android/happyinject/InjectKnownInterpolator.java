@@ -227,7 +227,7 @@ public class InjectKnownInterpolator implements InjectInterpolator {
 				field.set(object, context.getSystemService(Context.WINDOW_SERVICE));
 			}
 		} catch (Exception e) {
-			Log.w(getClass().getSimpleName(), "Inject"+object.getClass().getSimpleName()+"."+field.getName()+"failure");
+			Log.w(getClass().getSimpleName(), "Inject "+object.getClass().getSimpleName()+"."+field.getName()+" failure");
 			e.printStackTrace();
 		}
 	}

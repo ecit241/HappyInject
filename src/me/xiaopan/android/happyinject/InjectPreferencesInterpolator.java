@@ -53,7 +53,7 @@ public class InjectPreferencesInterpolator implements InjectInterpolator {
 				}
 			}
 		} catch (Exception e) {
-			Log.w(getClass().getSimpleName(), "Inject"+object.getClass().getSimpleName()+"."+field.getName()+"failure");
+			Log.w(getClass().getSimpleName(), "Inject "+object.getClass().getSimpleName()+"."+field.getName()+" failure");
 			e.printStackTrace();
 		}
 	}

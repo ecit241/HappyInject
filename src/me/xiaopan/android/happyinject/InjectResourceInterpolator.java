@@ -72,7 +72,7 @@ public class InjectResourceInterpolator implements InjectInterpolator {
 //			resources.getValueForDensity(id, density, outValue, resolveRefs)
 //			resources.getXml(id)
 		} catch (Exception e) {
-			Log.w(getClass().getSimpleName(), "Inject"+object.getClass().getSimpleName()+"."+field.getName()+"failure");
+			Log.w(getClass().getSimpleName(), "Inject "+object.getClass().getSimpleName()+"."+field.getName()+" failure");
 			e.printStackTrace();
 		}
 	}

@@ -20,7 +20,7 @@ public class InjectViewInterpolator implements InjectInterpolator{
 				field.set(object, view);
 			}
 		} catch (Exception e) {
-			Log.w(getClass().getSimpleName(), "Inject"+object.getClass().getSimpleName()+"."+field.getName()+"failure");
+			Log.w(getClass().getSimpleName(), "Inject "+object.getClass().getSimpleName()+"."+field.getName()+" failure");
 			e.printStackTrace();
 		}
 	}

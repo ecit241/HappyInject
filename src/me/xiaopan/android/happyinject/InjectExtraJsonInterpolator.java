@@ -27,7 +27,7 @@ public class InjectExtraJsonInterpolator implements InjectInterpolator {
 						field.set(object, injectExtraJson.withoutExposeAnnotation()?new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create():new Gson().fromJson(valueObject, field.getType()));
 					}
 				} catch (Exception e) {
-					Log.w(getClass().getSimpleName(), "Inject"+object.getClass().getSimpleName()+"."+field.getName()+"failure");
+					Log.w(getClass().getSimpleName(), "Inject "+object.getClass().getSimpleName()+"."+field.getName()+" failure");
 					e.printStackTrace();
 				}
 			}

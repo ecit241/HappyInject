@@ -43,7 +43,7 @@ public class InjectPreferencesJsonInterpolator implements InjectInterpolator {
 					field.set(object, gson.fromJson(valueObject, field.getType()));
 				}
 			} catch (Exception e) {
-				Log.w(getClass().getSimpleName(), "Inject"+object.getClass().getSimpleName()+"."+field.getName()+"failure");
+				Log.w(getClass().getSimpleName(), "Inject "+object.getClass().getSimpleName()+"."+field.getName()+" failure");
 				e.printStackTrace();
 			}
 		}
