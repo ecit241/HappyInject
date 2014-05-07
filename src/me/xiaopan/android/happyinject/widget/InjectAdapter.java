@@ -84,7 +84,7 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
             }else{
                 viewHolder = (Holder) convertView.getTag();
             }
-            viewHolder.setValues(context, dataList.get(position));
+            viewHolder.setValues(context, position, dataList.get(position));
             return convertView;
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,6 +97,6 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
     }
 
     public interface ViewHolder<E>{
-        public void setValues(Context context, E e);
+        public void setValues(Context context, int position, E e);
     }
 }

@@ -110,7 +110,7 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
             }else{
                 groupViewHolder = (GroupHolder) convertView.getTag();
             }
-            groupViewHolder.setValues(context, isExpanded, dataList.get(groupPosition));
+            groupViewHolder.setValues(context, groupPosition, isExpanded, dataList.get(groupPosition));
             return convertView;
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,7 +140,7 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
             }else{
                 childViewHolder = (ChildHolder) convertView.getTag();
             }
-            childViewHolder.setValues(context, isLastChild, dataList.get(groupPosition).getChildList().get(childPosition));
+            childViewHolder.setValues(context, groupPosition, childPosition, isLastChild, dataList.get(groupPosition).getChildList().get(childPosition));
             return convertView;
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,10 +157,10 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
     }
 
     public interface GroupViewHolder<E>{
-        public void setValues(Context context, boolean isExpanded, E e);
+        public void setValues(Context context, int groupPosition, boolean isExpanded, E e);
     }
 
     public interface ChildViewHolder<E>{
-        public void setValues(Context context, boolean isLastChild, E e);
+        public void setValues(Context context, int groupPosition, int childPosition, boolean isLastChild, E e);
     }
 }
