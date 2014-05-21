@@ -1,6 +1,6 @@
 # ![Logo](https://github.com/xiaopansky/HappyInject/raw/master/res/drawable-mdpi/ic_launcher.png) HappyInject
 
-HappyInject是用Android上的一个注入类库，类似于RoboGuice，但比RoboGuice更轻量级。
+HappyInject是Android上的一个注入类库，类似于RoboGuice，但比RoboGuice更轻量级。
 
 ## Features
 >* 提供Layout、View、Resource、Bundle Extra、Service、SharedPreferences、Fragment等资源的注入；
