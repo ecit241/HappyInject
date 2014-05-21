@@ -89,47 +89,48 @@ public class MainActivity extends FragmentActivity{
 		PreferenceUtils.putObject(getBaseContext(), KEY_JSON, bean2);
 		
 		// 然后初始化列表
-		String[] items = new String[]{"注入功能测试", "非注入功能测试", "FragmentDialog测试"};
+		String[] items = new String[]{"注入功能测试", "非注入功能测试", "FragmentDialog测试", "InjectAdapter", "InjectExpandableListAdapter"};
 		listView.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, android.R.id.text1, items));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Bundle bundle = new Bundle();
-				bundle.putBoolean(MainActivity.PARAM_BOOLEAN, true);
-				bundle.putBooleanArray(MainActivity.PARAM_BOOLEAN_ARRAY, new boolean[]{true, false, true});
-				bundle.putByte(MainActivity.PARAM_BYTE, (byte) 110);
-				bundle.putByteArray(MainActivity.PARAM_BYTE_ARRAY, new byte[]{111, 112, 113});
-				bundle.putChar(MainActivity.PARAM_CHAR, 'R');
-				bundle.putCharArray(MainActivity.PARAM_CHAR_ARRAY, new char[]{'c', 'h', 'a', 'r'});
-				bundle.putCharSequence(MainActivity.PARAM_CHAR_SEQUENCE, "CharSequence");
-				bundle.putCharSequenceArray(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY, new CharSequence[]{"Char", " ", "Sequence"});
-				bundle.putDouble(MainActivity.PARAM_DOUBLE, 12.00d);
-				bundle.putDoubleArray(MainActivity.PARAM_DOUBLE_ARRAY, new double[]{12.01d, 12.02d, 12.03d});
-				bundle.putFloat(MainActivity.PARAM_FLOAT, 13.00f);
-				bundle.putFloatArray(MainActivity.PARAM_FLOAT_ARRAY, new float[]{13.01f, 13.02f, 13.03f});
-				bundle.putInt(MainActivity.PARAM_INT, 120);
-				bundle.putIntArray(MainActivity.PARAM_INT_ARRAY, new int[]{121, 122, 123,});
-				bundle.putLong(MainActivity.PARAM_LONG, 12345);
-				bundle.putLongArray(MainActivity.PARAM_LONG_ARRAY, new long[]{12346, 12347, 12348});
-				bundle.putShort(MainActivity.PARAM_SHORT, (short) 2);
-				bundle.putShortArray(MainActivity.PARAM_SHORT_ARRAY, new short[]{3, 4, 5});
-				bundle.putString(MainActivity.PARAM_STRING, "String");
-				bundle.putStringArray(MainActivity.PARAM_STRING_ARRAY, new String[]{"String1", "String2", "String3"});
-				
-				// 将一个对象转换成JSON字符串放进Bundle中
-				MyBean bean = new MyBean();
-				bean.setEmail("sky@xiaopan.me");
-				bean.setName("小潘");
-				bean.setSex("男");
-				bundle.putString(PARAM_STRING_JSON, new Gson().toJson(bean));
-				
-				// 放一个字符串列表进去
-				ArrayList<String> stringList = new ArrayList<String>();
-				stringList.add("ArrayList String 1");
-				stringList.add("ArrayList String 2");
-				stringList.add("ArrayList String 3");
-				bundle.putStringArrayList(MainActivity.PARAM_STRING_ARRAY_LIST, stringList);
-				switch(position){
+				if(position <= 2){
+					Bundle bundle = new Bundle();
+					bundle.putBoolean(MainActivity.PARAM_BOOLEAN, true);
+					bundle.putBooleanArray(MainActivity.PARAM_BOOLEAN_ARRAY, new boolean[]{true, false, true});
+					bundle.putByte(MainActivity.PARAM_BYTE, (byte) 110);
+					bundle.putByteArray(MainActivity.PARAM_BYTE_ARRAY, new byte[]{111, 112, 113});
+					bundle.putChar(MainActivity.PARAM_CHAR, 'R');
+					bundle.putCharArray(MainActivity.PARAM_CHAR_ARRAY, new char[]{'c', 'h', 'a', 'r'});
+					bundle.putCharSequence(MainActivity.PARAM_CHAR_SEQUENCE, "CharSequence");
+					bundle.putCharSequenceArray(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY, new CharSequence[]{"Char", " ", "Sequence"});
+					bundle.putDouble(MainActivity.PARAM_DOUBLE, 12.00d);
+					bundle.putDoubleArray(MainActivity.PARAM_DOUBLE_ARRAY, new double[]{12.01d, 12.02d, 12.03d});
+					bundle.putFloat(MainActivity.PARAM_FLOAT, 13.00f);
+					bundle.putFloatArray(MainActivity.PARAM_FLOAT_ARRAY, new float[]{13.01f, 13.02f, 13.03f});
+					bundle.putInt(MainActivity.PARAM_INT, 120);
+					bundle.putIntArray(MainActivity.PARAM_INT_ARRAY, new int[]{121, 122, 123,});
+					bundle.putLong(MainActivity.PARAM_LONG, 12345);
+					bundle.putLongArray(MainActivity.PARAM_LONG_ARRAY, new long[]{12346, 12347, 12348});
+					bundle.putShort(MainActivity.PARAM_SHORT, (short) 2);
+					bundle.putShortArray(MainActivity.PARAM_SHORT_ARRAY, new short[]{3, 4, 5});
+					bundle.putString(MainActivity.PARAM_STRING, "String");
+					bundle.putStringArray(MainActivity.PARAM_STRING_ARRAY, new String[]{"String1", "String2", "String3"});
+					
+					// 将一个对象转换成JSON字符串放进Bundle中
+					MyBean bean = new MyBean();
+					bean.setEmail("sky@xiaopan.me");
+					bean.setName("小潘");
+					bean.setSex("男");
+					bundle.putString(PARAM_STRING_JSON, new Gson().toJson(bean));
+					
+					// 放一个字符串列表进去
+					ArrayList<String> stringList = new ArrayList<String>();
+					stringList.add("ArrayList String 1");
+					stringList.add("ArrayList String 2");
+					stringList.add("ArrayList String 3");
+					bundle.putStringArrayList(MainActivity.PARAM_STRING_ARRAY_LIST, stringList);
+					switch(position){
 					case 0 : 
 						Second.SECOND_CHRONOGRAPH.lap(); 
 						Intent intent = new Intent(getBaseContext(), InjectTestActivity.class);
@@ -146,6 +147,17 @@ public class MainActivity extends FragmentActivity{
 						Second.SECOND_CHRONOGRAPH.lap(); 
 						new TestDialogFragment().show(getSupportFragmentManager(), ""); 
 						break;
+					}
+				} else {
+					Class<?> targetClass = null;
+					if(position == 3){
+						targetClass = InjectAdapterActivity.class;
+					}else if(position == 4){
+						targetClass = InjectExpandableListAdapterActivity.class;
+					}
+					if(targetClass != null){
+						startActivity(new Intent(getBaseContext(), targetClass));
+					}
 				}
 			}
 		});

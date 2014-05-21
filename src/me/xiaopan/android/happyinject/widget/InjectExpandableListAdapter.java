@@ -16,11 +16,10 @@
 
 package me.xiaopan.android.happyinject.widget;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import me.xiaopan.android.happyinject.InjectContentView;
-import me.xiaopan.android.happyinject.InjectView;
+import me.xiaopan.android.happyinject.Injector;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +33,7 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
     private Class<ChildHolder> childHolderClass;
     private BindingEventListener<GroupHolder> groupBindingEventListener;
     private BindingEventListener<ChildHolder> childBindingEventListener;
+    private Injector injector;
 
     public InjectExpandableListAdapter(Context context, Class<GroupHolder> groupHolderClass, Class<ChildHolder> childHolderClass, List<Group> dataList, BindingEventListener<GroupHolder> groupBindingEventListener, BindingEventListener<ChildHolder> childBindingEventListener) {
         this.context = context;
@@ -95,18 +95,24 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
             GroupHolder groupViewHolder;
             if(convertView == null){
                 InjectContentView injectContentView = groupHolderClass.getAnnotation(InjectContentView.class);
+                if(injectContentView == null){
+                	throw new IllegalArgumentException("Not found InjectContentView Annotation in "+groupHolderClass.getName());
+                }
                 convertView = LayoutInflater.from(context).inflate(injectContentView.value(), null);
                 groupViewHolder = groupHolderClass.newInstance();
-                convertView.setTag(groupViewHolder);
-                for(Field field : groupHolderClass.getDeclaredFields()){
-                    if(field.isAnnotationPresent(InjectView.class)){
-                        field.setAccessible(true);
-                        field.set(groupViewHolder, convertView.findViewById(field.getAnnotation(InjectView.class).value()));
-                    }
+                if(injector == null){
+                	injector = new Injector(groupViewHolder);
+                }else{
+                	injector.setInjectObject(groupViewHolder);
                 }
+                injector.injectViewMembers(convertView);
+                injector.injectResourceMembers(context);
+                injector.injectKnowMembers(context);
+                injector.injectPreferenceMembers(context);
                 if(groupBindingEventListener != null){
                     groupBindingEventListener.bindingEvent(groupViewHolder);
                 }
+                convertView.setTag(groupViewHolder);
             }else{
                 groupViewHolder = (GroupHolder) convertView.getTag();
             }
@@ -125,18 +131,24 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
             ChildHolder childViewHolder;
             if(convertView == null){
                 InjectContentView injectContentView = childHolderClass.getAnnotation(InjectContentView.class);
+                if(injectContentView == null){
+                	throw new IllegalArgumentException("Not found InjectContentView Annotation in "+childHolderClass.getName());
+                }
                 convertView = LayoutInflater.from(context).inflate(injectContentView.value(), null);
                 childViewHolder = childHolderClass.newInstance();
-                convertView.setTag(childViewHolder);
-                for(Field field : childHolderClass.getDeclaredFields()){
-                    if(field.isAnnotationPresent(InjectView.class)){
-                        field.setAccessible(true);
-                        field.set(childViewHolder, convertView.findViewById(field.getAnnotation(InjectView.class).value()));
-                    }
+                if(injector == null){
+                	injector = new Injector(childViewHolder);
+                }else{
+                	injector.setInjectObject(childViewHolder);
                 }
+                injector.injectViewMembers(convertView);
+                injector.injectResourceMembers(context);
+                injector.injectKnowMembers(context);
+                injector.injectPreferenceMembers(context);
                 if(childBindingEventListener != null){
                     childBindingEventListener.bindingEvent(childViewHolder);
                 }
+                convertView.setTag(childViewHolder);
             }else{
                 childViewHolder = (ChildHolder) convertView.getTag();
             }

@@ -14,7 +14,7 @@ import android.view.View;
  * 注入器
  */
 public class Injector {
-	private Object object;
+	private Object injectObject;
 	private List<Field> extraFields;
 	private List<Field> viewFields;
 	private List<Field> knownFields;
@@ -24,12 +24,29 @@ public class Injector {
 	private List<Field> preferencesFields;
 	private List<Field> preferencesJsonFields;
 	
-	public Injector(Object object){
-		this.object = object;
+	public Injector(Object injectObject){
+		setInjectObject(injectObject);
+	}
+	
+	public void setInjectObject(Object injectObject){
+		if(injectObject == null){
+			new NullPointerException("injectObject is null").printStackTrace();
+			return;
+		}
+		
+		this.injectObject = injectObject;
+		extraFields = null;
+		viewFields = null;
+		knownFields = null;
+		resourceFields = null;
+		extraJsonFields = null;
+		fragmentFields = null;
+		preferencesFields = null;
+		preferencesJsonFields = null;
 		
 		// 将字段分组
 		int modifiers;
-		Class<?> classs = object.getClass();
+		Class<?> classs = injectObject.getClass();
 		while(true){
 			if(classs != null){
 				for(Field field : classs.getDeclaredFields()){
@@ -95,11 +112,13 @@ public class Injector {
 	 * @param rootView
 	 */
 	public void injectViewMembers(View rootView){
-		if(rootView != null && viewFields != null && viewFields.size() > 0){
-			InjectViewInterpolator injectViewInterpolator = new InjectViewInterpolator(rootView);
-			for(Field field : viewFields){
-				injectViewInterpolator.onInject(field, object);
-			}
+		if(injectObject == null || rootView == null || viewFields == null || viewFields.size() <= 0){
+			return;
+		}
+		
+		InjectViewInterpolator injectViewInterpolator = new InjectViewInterpolator(rootView);
+		for(Field field : viewFields){
+			injectViewInterpolator.onInject(field, injectObject);
 		}
 	}
 	
@@ -108,11 +127,13 @@ public class Injector {
 	 * @param fragmentManager
 	 */
 	public void injectFragmentMembers(FragmentManager fragmentManager){
-		if(fragmentManager != null && fragmentFields != null && fragmentFields.size() > 0){
-			InjectFragmentInterpolator injectFragmentInterpolator = new InjectFragmentInterpolator(fragmentManager);
-			for(Field field : fragmentFields){
-				injectFragmentInterpolator.onInject(field, object);
-			}
+		if(injectObject == null || fragmentManager == null || fragmentFields == null || fragmentFields.size() <= 0){
+			return;
+		}
+		
+		InjectFragmentInterpolator injectFragmentInterpolator = new InjectFragmentInterpolator(fragmentManager);
+		for(Field field : fragmentFields){
+			injectFragmentInterpolator.onInject(field, injectObject);
 		}
 	}
 	
@@ -121,35 +142,37 @@ public class Injector {
 	 * @param bundle
 	 */
 	public void injectExtraMembers(Bundle bundle){
-		if(bundle == null){
+		if(injectObject == null || bundle == null){
 			return;
 		}
 		
 		if(extraFields != null && extraFields.size() > 0){
 			InjectExtraInterpolator injectExtraInterpolator = new InjectExtraInterpolator(bundle);
 			for(Field field : extraFields){
-				injectExtraInterpolator.onInject(field, object);
+				injectExtraInterpolator.onInject(field, injectObject);
 			}
 		}
 		
 		if(extraJsonFields != null && extraJsonFields.size() > 0){
 			InjectExtraJsonInterpolator injectExtraJsonInterpolator = new InjectExtraJsonInterpolator(bundle);
 			for(Field field : extraJsonFields){
-				injectExtraJsonInterpolator.onInject(field, object);
+				injectExtraJsonInterpolator.onInject(field, injectObject);
 			}
 		}
 	}
 	
 	/**
-	 * 注入Resource字段
+	 * 注入Resource资源
 	 * @param context
 	 */
 	public void injectResourceMembers(Context context){
-		if(context != null && resourceFields != null && resourceFields.size() > 0){
-			InjectResourceInterpolator injectResourceInterpolator = new InjectResourceInterpolator(context);
-			for(Field field : resourceFields){
-				injectResourceInterpolator.onInject(field, object);
-			}
+		if(injectObject == null || context == null || resourceFields == null || resourceFields.size() <= 0){
+			return;
+		}
+		
+		InjectResourceInterpolator injectResourceInterpolator = new InjectResourceInterpolator(context);
+		for(Field field : resourceFields){
+			injectResourceInterpolator.onInject(field, injectObject);
 		}
 	}
 	
@@ -158,11 +181,13 @@ public class Injector {
 	 * @param context
 	 */
 	public void injectKnowMembers(Context context){
-		if(context != null && knownFields != null && knownFields.size() > 0){
-			InjectKnownInterpolator injectKnownInterpolator = new InjectKnownInterpolator(context);
-			for(Field field : knownFields){
-				injectKnownInterpolator.onInject(field, object);
-			}
+		if(injectObject == null || context == null || knownFields == null || knownFields.size() <= 0){
+			return;
+		}
+		
+		InjectKnownInterpolator injectKnownInterpolator = new InjectKnownInterpolator(context);
+		for(Field field : knownFields){
+			injectKnownInterpolator.onInject(field, injectObject);
 		}
 	}
 	
@@ -171,21 +196,21 @@ public class Injector {
 	 * @param context
 	 */
 	public void injectPreferenceMembers(Context context){
-		if(context == null){
+		if(injectObject == null || context == null){
 			return;
 		}
 		
 		if(preferencesFields != null && preferencesFields.size() > 0){
 			InjectPreferencesInterpolator injectPreferencesInterpolator = new InjectPreferencesInterpolator(context);
 			for(Field field : preferencesFields){
-				injectPreferencesInterpolator.onInject(field, object);
+				injectPreferencesInterpolator.onInject(field, injectObject);
 			}
 		}
 		
 		if(preferencesJsonFields != null && preferencesJsonFields.size() > 0){
 			InjectPreferencesJsonInterpolator injectPreferencesJsonInterpolator = new InjectPreferencesJsonInterpolator(context);
 			for(Field field : preferencesJsonFields){
-				injectPreferencesJsonInterpolator.onInject(field, object);
+				injectPreferencesJsonInterpolator.onInject(field, injectObject);
 			}
 		}
 	}

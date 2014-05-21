@@ -16,11 +16,10 @@
 
 package me.xiaopan.android.happyinject.widget;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import me.xiaopan.android.happyinject.InjectContentView;
-import me.xiaopan.android.happyinject.InjectView;
+import me.xiaopan.android.happyinject.Injector;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +31,7 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
     private List<Data> dataList;
     private Class<Holder> holderClass;
     private BindingEventListener<Holder> bindingEventListener;
+    private Injector injector;
 
     public InjectAdapter(Context context, Class<Holder> holderClass, List<Data> dataList, BindingEventListener<Holder> bindingEventListener) {
         this.context = context;
@@ -69,18 +69,24 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
             Holder viewHolder;
             if(convertView == null){
                 InjectContentView injectContentView = holderClass.getAnnotation(InjectContentView.class);
+                if(injectContentView == null){
+                	throw new IllegalArgumentException("Not found InjectContentView Annotation in "+holderClass.getName());
+                }
                 convertView = LayoutInflater.from(context).inflate(injectContentView.value(), null);
                 viewHolder = holderClass.newInstance();
-                convertView.setTag(viewHolder);
-                for(Field field : holderClass.getDeclaredFields()){
-                    if(field.isAnnotationPresent(InjectView.class)){
-                        field.setAccessible(true);
-                        field.set(viewHolder, convertView.findViewById(field.getAnnotation(InjectView.class).value()));
-                    }
+                if(injector == null){
+                	injector = new Injector(viewHolder);
+                }else{
+                	injector.setInjectObject(viewHolder);
                 }
+                injector.injectViewMembers(convertView);
+                injector.injectResourceMembers(context);
+                injector.injectKnowMembers(context);
+                injector.injectPreferenceMembers(context);
                 if(bindingEventListener != null){
                     bindingEventListener.bindingEvent(viewHolder);
                 }
+                convertView.setTag(viewHolder);
             }else{
                 viewHolder = (Holder) convertView.getTag();
             }

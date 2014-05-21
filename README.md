@@ -1,11 +1,11 @@
-# ![Logo](https://github.com/xiaopansky/Android-HappyInject/raw/master/res/drawable-mdpi/ic_launcher.png) Android-HappyInject
+# ![Logo](https://github.com/xiaopansky/HappyInject/raw/master/res/drawable-mdpi/ic_launcher.png) HappyInject
 
-HappyInject是用在Android上的一个注入类库，类似于RoboGuice，但比RoboGuice更轻量级。
+HappyInject是用Android上的一个注入类库，类似于RoboGuice，但比RoboGuice更轻量级。
 
 ## Features
->* 可注入Layout、View、Resource、Bundle Extra、Service、SharedPreferences、Fragment等资源的注入；
+>* 提供Layout、View、Resource、Bundle Extra、Service、SharedPreferences、Fragment等资源的注入；
 >* 特别提供了InjectAdapter、InjectExpandableListAdapter通过注入来避免创建新的Adapter；
->* 比RoboGuice更轻量级，只提供了上述资源的注入功能，因此对应用的整体性能几乎没有影响。
+>* 由于只专注于上述资源的注入，因此比RoboGuice更轻量级。
 
 ## Usage
 可继承的超类分以下四种：
@@ -43,25 +43,68 @@ Loader：
 >* InjectAsyncTaskLoader
 >* InjectLoader
 
+Adapter：
+>* InjectAdapter
+>* InjectExpandableListAdapter
+
 #### 可使用的注解有以下几种：
 >* DisableInjector：禁用注入功能。因为注解功能默认是开启的，如果你不想使用注入的话就可是使用此注解来禁用注入功能；
->* Inject：注入系统服务（通过getService()的各种Manager）或者ShardPreferences；在注入ShardPreferences时你可以通过sharedPreferencesName参数指定名称，不指定时将注入默认的ShardPreferences；
+>* Inject：注入系统服务（通过getService()的各种Manager）或者ShardPreferences；在注入ShardPreferences时你可以通过sharedPreferencesName参数指定名称，不指定时将注入默认的ShardPreferences；适用于以下场合：
+    1. Activity
+    2. Fragment
+    3. Service
+    4. BroadcastRecevier
+    5. ContextProvidet
+    6. Loader
+    7. InjectAdapter.ViewHolder
+    8. InjectExpandableListAdapter.GroupViewHolder
+    9. InjectExpandableListAdapter.ChildViewHolder
 >* InjectContentView：注入内容视图。适用于以下场合：
     1. Activity
     2. Fragment
     3. InjectAdapter.ViewHolder
-    3. InjectExpandableListAdapter.GroupViewHolder
-    3. InjectExpandableListAdapter.ChildViewHolder
+    4. InjectExpandableListAdapter.GroupViewHolder
+    5. InjectExpandableListAdapter.ChildViewHolder
 >* InjectExtra：注入Bundle中的参数。适用于以下场合：
     1. Activity：Bundle来自getIntent().getExtras()
     2. Fragment：Bundle来自getArguments()
     3. BroadcastReceiver：Bundle来自onReceive()方法中intent参数的getExtras()
->* InjectExtraJson：将Bundle中的字符串通过Gson转换成对象
+>* InjectExtraJson：将Bundle中的字符串通过Gson转换成对象。适用于以下场合：
+    1. Activity：Bundle来自getIntent().getExtras()
+    2. Fragment：Bundle来自getArguments()
+    3. BroadcastReceiver：Bundle来自onReceive()方法中intent参数的getExtras()
 >* InjectFragment：注入Fragment。只支持FragmentActivity中Fragment类型的字段；
->* InjectParentMember：注入父类的成员变量。默认是不注入父类的成员变量的；
->* InjectPreference：注入SharedPreferences中的参数。SharedPreferencees的名称可通过sharedPreferencesName参数指定，不指定时将从默认的SharedPreferencees中获取参数；
->* InjectPreferenceJson：将SharedPreferences中的字符串通过Gson转换成对象
->* InjectResource：注入资源。适用于以下场合：
+>* InjectParentMember：注入父类的成员变量。默认是不注入父类的成员变量的；适用于以下场合：
+    1. Activity
+    2. Fragment
+    3. Service
+    4. BroadcastRecevier
+    5. ContextProvidet
+    6. Loader
+    7. InjectAdapter.ViewHolder
+    8. InjectExpandableListAdapter.GroupViewHolder
+    9. InjectExpandableListAdapter.ChildViewHolder
+>* InjectPreference：注入SharedPreferences中的参数。SharedPreferencees的名称可通过sharedPreferencesName参数指定，不指定时将从默认的SharedPreferencees中获取参数；适用于以下场合：
+    1. Activity
+    2. Fragment
+    3. Service
+    4. BroadcastRecevier
+    5. ContextProvidet
+    6. Loader
+    7. InjectAdapter.ViewHolder
+    8. InjectExpandableListAdapter.GroupViewHolder
+    9. InjectExpandableListAdapter.ChildViewHolder
+>* InjectPreferenceJson：将SharedPreferences中的字符串通过Gson转换成对象适用于以下场合：
+    1. Activity
+    2. Fragment
+    3. Service
+    4. BroadcastRecevier
+    5. ContextProvidet
+    6. Loader
+    7. InjectAdapter.ViewHolder
+    8. InjectExpandableListAdapter.GroupViewHolder
+    9. InjectExpandableListAdapter.ChildViewHolder
+>* InjectResource：注入资源。支持的资源类型如下：
     1. boolean
     2. String
     3. String[]
@@ -71,6 +114,17 @@ Loader：
     7. ColorStateList
     8. Animation
     9. Movie
+    
+    适用于以下场合：
+    1. Activity
+    2. Fragment
+    3. Service
+    4. BroadcastRecevier
+    5. ContextProvidet
+    6. Loader
+    7. InjectAdapter.ViewHolder
+    8. InjectExpandableListAdapter.GroupViewHolder
+    9. InjectExpandableListAdapter.ChildViewHolder
 >* InjectView：注入View。适用于以下场合：
     1. Activity
     2. Fragment
@@ -590,19 +644,22 @@ listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext()
 InjectExpandableListAdapter的用法同InjectAdapter一样。
 
 ## Downloads
->* [android-happy-inject-1.1.1.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.1.1.jar)
+>* [android-happy-inject-1.2.0.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.0.jar)
 
->* [android-happy-inject-1.1.1-with-src.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/releases/android-happy-inject-1.1.1-with-src.jar)（包含源码）
+>* [android-happy-inject-1.2.0-with-src.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.0-with-src.jar)
 
-## Depend
->* [android-support-v4.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/android-support-v4.jar) 可选的。如果你要使用InjectFragmentActivity、InjectFragment、InjectListFeagment、InjectDialogFragment就必须要引入此类库
->* [android-support-v7-appcompat.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/android-support-v7-appcompat.jar)
+Dependencies
+>* [android-support-v4.jar](https://github.com/xiaopansky/HappyInject/raw/master/libs/android-support-v4.jar) 可选的。如果你要使用InjectFragmentActivity、InjectFragment、InjectListFeagment、InjectDialogFragment就必须要引入此类库
+>* [android-support-v7-appcompat.jar](https://github.com/xiaopansky/HappyInject/raw/master/libs/android-support-v7-appcompat.jar)
 可选的。如果你要使用InjectActionBarActivity就必须要引入此类库，值的注意的是使用此类库的时候一定要使用sdk\extras\android\support\v7\appcompat\libs目录下的android-support-v4.jar（因为这个目录下的android-support-v4.jar包含有android-support-v7-appcompat.jar需要的类）
->* [gson-2.2.2.jar](https://github.com/xiaopansky/Android-HappyInject/raw/master/libs/gson-2.2.2.jar) 可选的。如果你要使用InjectExtraJson、InjectPreferenceJson就必须要引入此类库
-
+>* [gson-2.2.4.jar](https://github.com/xiaopansky/HappyInject/raw/master/libs/gson-2.2.4.jar) 可选的。如果你要使用InjectExtraJson、InjectPreferenceJson就必须要引入此类库
 >*  如果你要使用InjectMapActivity就必须选择Google APIs
 
 ## Change Log
+### 1.2.0
+>* 调整Injector的Object设置逻辑，使之支持重复利用
+>* 调整InjectAdapter和InjectExpandableListAdapter的注入实现方式，采用Injector来注入，可注入Resource、Service、Preferences等
+
 ### 1.1.1
 >* InjectAdapter和InjectExpandableListAdapter的setValues()方法增加position参数
 

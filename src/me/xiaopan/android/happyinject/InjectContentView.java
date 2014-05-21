@@ -24,8 +24,8 @@ import java.lang.annotation.Target;
 
 /**
  * 注入内容视图
- * <br>首先将你的Activity继承于EasyActivity，然后在你的Activity上加上此注解并指定布局ID即可；
- * <br>这样一来在运行时EasyActivity就会解析此注解并调用steContentView()方法帮你设置内容视图。
+ * <br>首先将你的Activity继承于InjectActivity，然后在你的Activity上加上此注解并指定布局ID即可；
+ * <br>这样一来在运行时InjectActivity就会解析此注解并调用steContentView()方法帮你设置内容视图。
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
