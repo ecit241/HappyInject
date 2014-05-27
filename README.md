@@ -7,7 +7,7 @@ HappyInject是Android上的一个注入类库，类似于RoboGuice，但比RoboG
 >* 特别提供了InjectAdapter、InjectExpandableListAdapter通过注入来避免创建新的Adapter；
 >* 由于只专注于上述资源的注入，因此比RoboGuice更轻量级。
 
-## Usage
+## Usage guide
 可继承的超类分以下四种：
 
 Activity：
@@ -104,18 +104,7 @@ Adapter：
     7. InjectAdapter.ViewHolder
     8. InjectExpandableListAdapter.GroupViewHolder
     9. InjectExpandableListAdapter.ChildViewHolder
->* InjectResource：注入资源。支持的资源类型如下：
-    1. boolean
-    2. String
-    3. String[]
-    4. Integer
-    5. Integer[]
-    6. Drawable
-    7. ColorStateList
-    8. Animation
-    9. Movie
-    
-    适用于以下场合：
+>* InjectResource：注入资源。可注入boolean、String、String[]、Integer、Integer[]、Drawable、ColorStateList、Animation、Movie。适用于以下场合：
     1. Activity
     2. Fragment
     3. Service
@@ -132,7 +121,7 @@ Adapter：
     3. InjectExpandableListAdapter.GroupViewHolder
     3. InjectExpandableListAdapter.ChildViewHolder
     
-#### Example
+#### Examples
 ##### InjectActivity：
 假设我们要从MainActivity跳转到另外一个Activity，还要携带一些数据。
 首先来看MainActivity的实现
@@ -644,9 +633,9 @@ listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext()
 InjectExpandableListAdapter的用法同InjectAdapter一样。
 
 ## Downloads
->* [android-happy-inject-1.2.1.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.1.jar)
+>* [android-happy-inject-1.2.0.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.0.jar)
 
->* [android-happy-inject-1.2.1-with-src.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.1-with-src.jar)
+>* [android-happy-inject-1.2.0-with-src.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.0-with-src.jar)
 
 Dependencies
 >* [android-support-v4.jar](https://github.com/xiaopansky/HappyInject/raw/master/libs/android-support-v4.jar) 可选的。如果你要使用InjectFragmentActivity、InjectFragment、InjectListFeagment、InjectDialogFragment就必须要引入此类库
@@ -656,9 +645,6 @@ Dependencies
 >*  如果你要使用InjectMapActivity就必须选择Google APIs
 
 ## Change Log
-### 1.2.1
->* 包名从me.xiaopan.android.happyinject改为me.xiaopan.android.inject
-
 ### 1.2.0
 >* 调整Injector的Object设置逻辑，使之支持重复利用
 >* 调整InjectAdapter和InjectExpandableListAdapter的注入实现方式，采用Injector来注入，可注入Resource、Service、Preferences等
