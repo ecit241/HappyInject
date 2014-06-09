@@ -13,6 +13,11 @@ public class ProductGroupViewHolder implements GroupViewHolder<ProductGroup> {
 	@InjectView(R.id.text_productGroupItem_title) private TextView titleTextView;
 	
 	@Override
+	public void onCreate(Context context) {
+		
+	}
+	
+	@Override
 	public void setValues(Context arg0, int position, boolean arg2, ProductGroup productGroup) {
 		titleTextView.setText(productGroup.getName());
 	}

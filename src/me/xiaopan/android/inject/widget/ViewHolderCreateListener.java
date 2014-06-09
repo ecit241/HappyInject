@@ -16,6 +16,6 @@
 
 package me.xiaopan.android.inject.widget;
 
-public interface BindingEventListener<E>{
-    public void bindingEvent(E e);
+public interface ViewHolderCreateListener<E>{
+    public void onViewHolderCreate(E e);
 }

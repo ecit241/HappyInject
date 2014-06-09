@@ -6,7 +6,7 @@ import java.util.List;
 import me.xiaopan.android.inject.app.InjectListActivity;
 import me.xiaopan.android.inject.sample.holder.ExpertViewHolder;
 import me.xiaopan.android.inject.sample.model.Expert;
-import me.xiaopan.android.inject.widget.BindingEventListener;
+import me.xiaopan.android.inject.widget.ViewHolderCreateListener;
 import me.xiaopan.android.inject.widget.InjectAdapter;
 import android.os.Bundle;
 import android.view.View;
@@ -19,9 +19,9 @@ public class InjectAdapterActivity extends InjectListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		getListView().setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext(), ExpertViewHolder.class, createData(50), new BindingEventListener<ExpertViewHolder>() {
+		getListView().setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext(), ExpertViewHolder.class, createData(50), new ViewHolderCreateListener<ExpertViewHolder>() {
 			@Override
-			public void bindingEvent(final ExpertViewHolder expertViewHolder) {
+			public void onViewHolderCreate(final ExpertViewHolder expertViewHolder) {
 				expertViewHolder.getAskQuestion().setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {

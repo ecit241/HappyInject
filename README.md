@@ -601,6 +601,11 @@ public class ExpertViewHolder implements InjectAdapter.ViewHolder<Expert>{
     @InjectView(R.id.text_expertItem_name) TextView nameText;
     @InjectView(R.id.text_expertItem_major) TextView majorText;
     @InjectView(R.id.button_expertItem_askQuestion) Button askQuestion;
+    
+    @Override
+    public void onCreate(Context context) {
+    	
+    }
 
     @Override
     public void setValues(Context context, int position, Expert expert) {
@@ -618,9 +623,9 @@ listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext()
 如果你还需要为askQuestion按钮绑定点击事件，那么同样很简单，如下：
 ```java
 List<Expert> experts = ...;
-listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext(), ExpertViewHolder.class, experts, new InjectAdapter.BindingEventListener<ExpertViewHolder>() {
+listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext(), ExpertViewHolder.class, experts, new ViewHolderCreateListener<ExpertViewHolder>() {
     @Override
-    public void bindingEvent(ExpertViewHolder viewHolder) {
+    public void onViewHolderCreate(ExpertViewHolder viewHolder) {
         viewHolder.askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -633,9 +638,9 @@ listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext()
 InjectExpandableListAdapter的用法同InjectAdapter一样。
 
 ## Downloads
->* [android-happy-inject-1.2.0.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.0.jar)
+>* [android-happy-inject-1.2.2.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.2.jar)
 
->* [android-happy-inject-1.2.0-with-src.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.0-with-src.jar)
+>* [android-happy-inject-1.2.2-with-src.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.2-with-src.jar)
 
 Dependencies
 >* [android-support-v4.jar](https://github.com/xiaopansky/HappyInject/raw/master/libs/android-support-v4.jar) 可选的。如果你要使用InjectFragmentActivity、InjectFragment、InjectListFeagment、InjectDialogFragment就必须要引入此类库
@@ -645,6 +650,10 @@ Dependencies
 >*  如果你要使用InjectMapActivity就必须选择Google APIs
 
 ## Change Log
+### 1.2.2
+>* ViewHolder接口增加onCreate()回调
+>* 修改BindEventListener名称为ViewHolderCreateListener
+
 ### 1.2.0
 >* 调整Injector的Object设置逻辑，使之支持重复利用
 >* 调整InjectAdapter和InjectExpandableListAdapter的注入实现方式，采用Injector来注入，可注入Resource、Service、Preferences等

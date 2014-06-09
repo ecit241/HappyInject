@@ -14,6 +14,11 @@ public class ExpertViewHolder implements InjectAdapter.ViewHolder<Expert>{
     @InjectView(R.id.text_expertItem_name) private TextView nameText;
     @InjectView(R.id.text_expertItem_major) private TextView majorText;
     @InjectView(R.id.button_expertItem_askQuestion) public Button askQuestion;
+    
+    @Override
+    public void onCreate(Context context) {
+    	
+    }
 
     @Override
     public void setValues(Context context, int position, Expert item) {

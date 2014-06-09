@@ -12,6 +12,11 @@ import android.widget.TextView;
 public class ProductChildViewHolder implements ChildViewHolder<Product>{
     @InjectView(R.id.text_productChildItem_name) private TextView nameTextView;
     @InjectView(R.id.text_productChildItem_viewCount) private TextView viewCountTextView;
+    
+    @Override
+    public void onCreate(Context context) {
+    	
+    }
 
 	@Override
 	public void setValues(Context context, int groupPosition, int childPosition, boolean arg3, Product product) {

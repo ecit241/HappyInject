@@ -31,17 +31,17 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
     private List<Group> dataList;
     private Class<GroupHolder> groupHolderClass;
     private Class<ChildHolder> childHolderClass;
-    private BindingEventListener<GroupHolder> groupBindingEventListener;
-    private BindingEventListener<ChildHolder> childBindingEventListener;
+    private ViewHolderCreateListener<GroupHolder> groupViewHolderCreateListener;
+    private ViewHolderCreateListener<ChildHolder> childViewHolderCreateListener;
     private Injector injector;
 
-    public InjectExpandableListAdapter(Context context, Class<GroupHolder> groupHolderClass, Class<ChildHolder> childHolderClass, List<Group> dataList, BindingEventListener<GroupHolder> groupBindingEventListener, BindingEventListener<ChildHolder> childBindingEventListener) {
+    public InjectExpandableListAdapter(Context context, Class<GroupHolder> groupHolderClass, Class<ChildHolder> childHolderClass, List<Group> dataList, ViewHolderCreateListener<GroupHolder> groupViewHolderCreateListener, ViewHolderCreateListener<ChildHolder> childViewHolderCreateListener) {
         this.context = context;
         this.dataList = dataList;
         this.groupHolderClass = groupHolderClass;
         this.childHolderClass = childHolderClass;
-        this.groupBindingEventListener = groupBindingEventListener;
-        this.childBindingEventListener = childBindingEventListener;
+        this.groupViewHolderCreateListener = groupViewHolderCreateListener;
+        this.childViewHolderCreateListener = childViewHolderCreateListener;
     }
 
     public InjectExpandableListAdapter(Context context, Class<GroupHolder> groupHolderClass, Class<ChildHolder> childHolderClass, List<Group> dataList) {
@@ -109,8 +109,9 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
                 injector.injectResourceMembers(context);
                 injector.injectKnowMembers(context);
                 injector.injectPreferenceMembers(context);
-                if(groupBindingEventListener != null){
-                    groupBindingEventListener.bindingEvent(groupViewHolder);
+                groupViewHolder.onCreate(context);
+                if(groupViewHolderCreateListener != null){
+                    groupViewHolderCreateListener.onViewHolderCreate(groupViewHolder);
                 }
                 convertView.setTag(groupViewHolder);
             }else{
@@ -145,8 +146,9 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
                 injector.injectResourceMembers(context);
                 injector.injectKnowMembers(context);
                 injector.injectPreferenceMembers(context);
-                if(childBindingEventListener != null){
-                    childBindingEventListener.bindingEvent(childViewHolder);
+                childViewHolder.onCreate(context);
+                if(childViewHolderCreateListener != null){
+                    childViewHolderCreateListener.onViewHolderCreate(childViewHolder);
                 }
                 convertView.setTag(childViewHolder);
             }else{
@@ -169,10 +171,12 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
     }
 
     public interface GroupViewHolder<E>{
+    	public void onCreate(Context context);
         public void setValues(Context context, int groupPosition, boolean isExpanded, E e);
     }
 
     public interface ChildViewHolder<E>{
+    	public void onCreate(Context context);
         public void setValues(Context context, int groupPosition, int childPosition, boolean isLastChild, E e);
     }
 }

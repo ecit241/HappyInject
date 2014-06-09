@@ -30,14 +30,14 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
     private Context context;
     private List<Data> dataList;
     private Class<Holder> holderClass;
-    private BindingEventListener<Holder> bindingEventListener;
+    private ViewHolderCreateListener<Holder> viewHolderCreateListener;
     private Injector injector;
 
-    public InjectAdapter(Context context, Class<Holder> holderClass, List<Data> dataList, BindingEventListener<Holder> bindingEventListener) {
+    public InjectAdapter(Context context, Class<Holder> holderClass, List<Data> dataList, ViewHolderCreateListener<Holder> viewHolderCreateListener) {
         this.context = context;
         this.dataList = dataList;
         this.holderClass = holderClass;
-        this.bindingEventListener = bindingEventListener;
+        this.viewHolderCreateListener = viewHolderCreateListener;
         if(!holderClass.isAnnotationPresent(InjectContentView.class)){
             throw new IllegalArgumentException(" Not found InjectContentView Annotation in "+ holderClass.getName());
         }
@@ -83,8 +83,9 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
                 injector.injectResourceMembers(context);
                 injector.injectKnowMembers(context);
                 injector.injectPreferenceMembers(context);
-                if(bindingEventListener != null){
-                    bindingEventListener.bindingEvent(viewHolder);
+                viewHolder.onCreate(context);
+                if(viewHolderCreateListener != null){
+                    viewHolderCreateListener.onViewHolderCreate(viewHolder);
                 }
                 convertView.setTag(viewHolder);
             }else{
@@ -103,6 +104,7 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
     }
 
     public interface ViewHolder<E>{
+    	public void onCreate(Context context);
         public void setValues(Context context, int position, E e);
     }
 }
