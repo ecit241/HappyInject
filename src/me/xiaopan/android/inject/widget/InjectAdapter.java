@@ -72,7 +72,7 @@ public class InjectAdapter<Data, Holder extends InjectAdapter.ViewHolder<Data>> 
                 if(injectContentView == null){
                 	throw new IllegalArgumentException("Not found InjectContentView Annotation in "+holderClass.getName());
                 }
-                convertView = LayoutInflater.from(context).inflate(injectContentView.value(), null);
+                convertView = LayoutInflater.from(context).inflate(injectContentView.value(), parent, false);
                 viewHolder = holderClass.newInstance();
                 if(injector == null){
                 	injector = new Injector(viewHolder);

@@ -21,13 +21,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
+import me.xiaopan.android.inject.InjectExtraEnum;
+import me.xiaopan.android.inject.InjectPreferencesEnum;
 import me.xiaopan.android.inject.R;
 import me.xiaopan.android.inject.Inject;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectExtraJson;
-import me.xiaopan.android.inject.InjectPreference;
-import me.xiaopan.android.inject.InjectPreferenceJson;
+import me.xiaopan.android.inject.InjectPreferences;
+import me.xiaopan.android.inject.InjectPreferencesJson;
 import me.xiaopan.android.inject.InjectResource;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectActivity;
@@ -87,6 +89,7 @@ public class InjectTestActivity extends InjectActivity {
 	@InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE) private CharSequence charSequenceField;
 	@InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY) private CharSequence[] charSequenceFields;
 	@InjectExtraJson(MainActivity.PARAM_STRING_JSON) private MyBean bean;
+	@InjectExtraEnum(MainActivity.PARAM_STRING_ENUM) private Sex sex;
 
 	@Inject private AccessibilityManager accessibilityManager;
 	@Inject private AccountManager accountManager;
@@ -111,13 +114,14 @@ public class InjectTestActivity extends InjectActivity {
 	@Inject private WifiManager wifiManager;
 	@Inject private WindowManager windowManager;
 	
-	@InjectPreference(MainActivity.KEY_BOOLEAN) private boolean booleanPreference;
-	@InjectPreference(MainActivity.KEY_FLOAT) private float floatPreference;
-	@InjectPreference(MainActivity.KEY_INT) private int intPreference;
-	@InjectPreference(MainActivity.KEY_LONG) private long longPreference;
-	@InjectPreference(MainActivity.KEY_STRING) private String stringPreference;
-	@InjectPreference(MainActivity.KEY_STRING_SET) private Set<String> stringSetPreference;
-	@InjectPreferenceJson(MainActivity.KEY_JSON) private MyBean bean2;
+	@InjectPreferences(MainActivity.KEY_BOOLEAN) private boolean booleanPreference;
+	@InjectPreferences(MainActivity.KEY_FLOAT) private float floatPreference;
+	@InjectPreferences(MainActivity.KEY_INT) private int intPreference;
+	@InjectPreferences(MainActivity.KEY_LONG) private long longPreference;
+	@InjectPreferences(MainActivity.KEY_STRING) private String stringPreference;
+	@InjectPreferences(MainActivity.KEY_STRING_SET) private Set<String> stringSetPreference;
+	@InjectPreferencesJson(MainActivity.KEY_JSON) private MyBean bean2;
+	@InjectPreferencesEnum(MainActivity.KEY_ENUM) private Sex sex2;
 	
 	@InjectResource(R.integer.integer1) private int integer1;
 	@InjectResource(R.string.string1) private String string1;
@@ -154,7 +158,8 @@ public class InjectTestActivity extends InjectActivity {
 		extraStringBuffer.append("\n").append("stringFields").append("=").append(Arrays.toString(stringFields));
 		extraStringBuffer.append("\n").append("stringFieldList").append("=").append(stringFieldList.toString());
 		extraStringBuffer.append("\n").append("charSequenceFields").append("=").append(Arrays.toString(charSequenceFields));
-		extraStringBuffer.append("\n\n").append(bean.getName()).append(" ").append(bean.getSex()).append(" ").append(bean.getEmail());
+		extraStringBuffer.append("\n").append("Json").append("=").append(bean.getName()).append(" ").append(bean.getSex()).append(" ").append(bean.getEmail());
+		extraStringBuffer.append("\n").append("Enum").append("=").append("sex").append("：").append(sex!=null?sex.name():"没有收到");
 		textView2.setText(extraStringBuffer.toString());
 		
 		boolean success = true; 
@@ -180,7 +185,8 @@ public class InjectTestActivity extends InjectActivity {
 		preferenceStringBuffer.append("\n").append("longPreference").append("=").append(longPreference);
 		preferenceStringBuffer.append("\n").append("stringPreference").append("=").append(stringPreference);
 		preferenceStringBuffer.append("\n").append("stringSetPreference").append("=").append(stringSetPreference);
-		preferenceStringBuffer.append("\n\n").append(bean2.getName()).append(" ").append(bean2.getSex()).append(" ").append(bean2.getEmail());
+		preferenceStringBuffer.append("\n").append("Json").append("=").append(bean2.getName()).append(" ").append(bean2.getSex()).append(" ").append(bean2.getEmail());
+		preferenceStringBuffer.append("\n").append("Enum").append("=").append("sex").append("：").append(sex2!=null?sex2.name():"没有收到");
 		textView4.setText(preferenceStringBuffer.toString());
 		
 		StringBuffer resourceStringBuffer = new StringBuffer("Resource注入结果：");

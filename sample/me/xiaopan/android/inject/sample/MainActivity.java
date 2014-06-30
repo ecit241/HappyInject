@@ -54,6 +54,7 @@ public class MainActivity extends FragmentActivity{
 	public static final String PARAM_CHAR_SEQUENCE = "PARAM_CHAR_SEQUENCE";
 	public static final String PARAM_CHAR_SEQUENCE_ARRAY = "PARAM_CHAR_SEQUENCE_ARRAY";
 	public static final String PARAM_STRING_JSON = "PARAM_STRING_JSON";
+	public static final String PARAM_STRING_ENUM = "PARAM_STRING_ENUM";
 	public static final String KEY_BOOLEAN = "KEY_BOOLEAN";
 	public static final String KEY_FLOAT = "KEY_FLOAT";
 	public static final String KEY_INT = "KEY_INT";
@@ -61,6 +62,7 @@ public class MainActivity extends FragmentActivity{
 	public static final String KEY_STRING = "KEY_STRING";
 	public static final String KEY_STRING_SET = "KEY_STRING_SET";
 	public static final String KEY_JSON = "KEY_JSON";
+	public static final String KEY_ENUM = "KEY_ENUM";
 	
 	private ListView listView;
 	
@@ -87,6 +89,7 @@ public class MainActivity extends FragmentActivity{
 		bean2.setName("小潘2");
 		bean2.setSex("男2");
 		PreferenceUtils.putObject(getBaseContext(), KEY_JSON, bean2);
+		PreferenceUtils.putString(getBaseContext(), KEY_ENUM, Sex.WOMAN.name());
 		
 		// 然后初始化列表
 		String[] items = new String[]{"注入功能测试", "非注入功能测试", "FragmentDialog测试", "InjectAdapter", "InjectExpandableListAdapter"};
@@ -123,6 +126,8 @@ public class MainActivity extends FragmentActivity{
 					bean.setName("小潘");
 					bean.setSex("男");
 					bundle.putString(PARAM_STRING_JSON, new Gson().toJson(bean));
+					
+					bundle.putString(MainActivity.PARAM_STRING_ENUM, Sex.WOMAN.name());
 					
 					// 放一个字符串列表进去
 					ArrayList<String> stringList = new ArrayList<String>();

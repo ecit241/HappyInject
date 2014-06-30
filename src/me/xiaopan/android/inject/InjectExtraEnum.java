@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.inject.widget;
+package me.xiaopan.android.inject;
 
-public interface ViewHolderCreateListener<E>{
-    public void onViewHolderCreate(E e);
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * 注入扩展参数中的Enum对象
+ */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface InjectExtraEnum {
+	/**
+	 * 参数名称
+	 * @return
+	 */
+	public String value();
 }

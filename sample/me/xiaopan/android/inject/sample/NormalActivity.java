@@ -83,6 +83,7 @@ public class NormalActivity extends Activity {
 	private CharSequence charSequenceField;
 	private CharSequence[] charSequenceFields;
 	private MyBean bean;
+	private Sex sex;
 	
 	@Inject private AccessibilityManager accessibilityManager;
 	@Inject private AccountManager accountManager;
@@ -114,6 +115,7 @@ public class NormalActivity extends Activity {
 	private String stringPreference;
 	private Set<String> stringSetPreference;
 	private MyBean bean2;
+	private Sex sex2;
 	
 	private int integer1;
 	private String string1;
@@ -156,8 +158,8 @@ public class NormalActivity extends Activity {
 		stringFieldList = getIntent().getStringArrayListExtra(MainActivity.PARAM_STRING_ARRAY_LIST);
 		charSequenceField = getIntent().getCharSequenceExtra(MainActivity.PARAM_CHAR_SEQUENCE);
 		charSequenceFields = getIntent().getCharSequenceArrayExtra(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY);
-		
 		bean = new Gson().fromJson(getIntent().getStringExtra(MainActivity.PARAM_STRING_JSON), MyBean.class);
+		sex = Sex.valueOf(getIntent().getStringExtra(MainActivity.PARAM_STRING_ENUM));
 		
 		accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
 		accountManager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
@@ -189,6 +191,7 @@ public class NormalActivity extends Activity {
 		stringPreference = PreferenceUtils.getString(getBaseContext(), MainActivity.KEY_STRING);
 		stringSetPreference = PreferenceUtils.getStringSet(getBaseContext(), MainActivity.KEY_STRING_SET);
 		bean2 = PreferenceUtils.getObject(getBaseContext(), MainActivity.KEY_JSON, MyBean.class);
+		sex2 = Sex.valueOf(PreferenceUtils.getString(getBaseContext(), MainActivity.KEY_ENUM));
 		
 		integer1 = getResources().getInteger(R.integer.integer1);
 		string1 = getResources().getString(R.string.string1);
@@ -219,7 +222,8 @@ public class NormalActivity extends Activity {
 		extraStringBuffer.append("\n").append("stringFields").append("=").append(Arrays.toString(stringFields));
 		extraStringBuffer.append("\n").append("stringFieldList").append("=").append(stringFieldList.toString());
 		extraStringBuffer.append("\n").append("charSequenceFields").append("=").append(Arrays.toString(charSequenceFields));
-		extraStringBuffer.append("\n\n").append(bean.getName()).append(" ").append(bean.getSex()).append(" ").append(bean.getEmail());
+		extraStringBuffer.append("\n").append("Json").append("=").append(bean.getName()).append(" ").append(bean.getSex()).append(" ").append(bean.getEmail());
+		extraStringBuffer.append("\n").append("Enum").append("=").append("sex").append("：").append(sex!=null?sex.name():"没有收到");
 		textView2.setText(extraStringBuffer.toString());
 		
 		boolean success = true; 
@@ -245,7 +249,8 @@ public class NormalActivity extends Activity {
 		preferenceStringBuffer.append("\n").append("longPreference").append("=").append(longPreference);
 		preferenceStringBuffer.append("\n").append("stringPreference").append("=").append(stringPreference);
 		preferenceStringBuffer.append("\n").append("stringSetPreference").append("=").append(stringSetPreference);
-		preferenceStringBuffer.append("\n\n").append(bean2.getName()).append(" ").append(bean2.getSex()).append(" ").append(bean2.getEmail());
+		preferenceStringBuffer.append("\n").append("Json").append("=").append(bean2.getName()).append(" ").append(bean2.getSex()).append(" ").append(bean2.getEmail());
+		preferenceStringBuffer.append("\n").append("Enum").append("=").append("sex").append("：").append(sex2!=null?sex2.name():"没有收到");
 		textView4.setText(preferenceStringBuffer.toString());
 		
 		StringBuffer resourceStringBuffer = new StringBuffer("Resource初始化结果：");

@@ -20,9 +20,11 @@ public class Injector {
 	private List<Field> knownFields;
 	private List<Field> resourceFields;
 	private List<Field> extraJsonFields;
+	private List<Field> extraEnumFields;
 	private List<Field> fragmentFields;
 	private List<Field> preferencesFields;
 	private List<Field> preferencesJsonFields;
+	private List<Field> preferencesEnumFields;
 	
 	public Injector(Object injectObject){
 		setInjectObject(injectObject);
@@ -40,9 +42,11 @@ public class Injector {
 		knownFields = null;
 		resourceFields = null;
 		extraJsonFields = null;
+		extraEnumFields = null;
 		fragmentFields = null;
 		preferencesFields = null;
 		preferencesJsonFields = null;
+		preferencesEnumFields = null;
 		
 		// 将字段分组
 		int modifiers;
@@ -77,21 +81,31 @@ public class Injector {
 								extraJsonFields = new LinkedList<Field>();
 							}
 							extraJsonFields.add(field);
+						}else if(field.isAnnotationPresent(InjectExtraEnum.class)){
+							if(extraEnumFields == null){
+								extraEnumFields = new LinkedList<Field>();
+							}
+							extraEnumFields.add(field);
 						}else if(field.isAnnotationPresent(InjectFragment.class)){
 							if(fragmentFields == null){
 								fragmentFields = new LinkedList<Field>();
 							}
 							fragmentFields.add(field);
-						}else if(field.isAnnotationPresent(InjectPreference.class)){
+						}else if(field.isAnnotationPresent(InjectPreferences.class)){
 							if(preferencesFields == null){
 								preferencesFields = new LinkedList<Field>();
 							}
 							preferencesFields.add(field);
-						}else if(field.isAnnotationPresent(InjectPreferenceJson.class)){
+						}else if(field.isAnnotationPresent(InjectPreferencesJson.class)){
 							if(preferencesJsonFields == null){
 								preferencesJsonFields = new LinkedList<Field>();
 							}
 							preferencesJsonFields.add(field);
+						}else if(field.isAnnotationPresent(InjectPreferencesEnum.class)){
+							if(preferencesEnumFields == null){
+								preferencesEnumFields = new LinkedList<Field>();
+							}
+							preferencesEnumFields.add(field);
 						}
 					}
 				}
@@ -159,6 +173,13 @@ public class Injector {
 				injectExtraJsonInterpolator.onInject(field, injectObject);
 			}
 		}
+		
+		if(extraEnumFields != null && extraEnumFields.size() > 0){
+			InjectExtraEnumInterpolator injectExtraEnumInterpolator = new InjectExtraEnumInterpolator(bundle);
+			for(Field field : extraEnumFields){
+				injectExtraEnumInterpolator.onInject(field, injectObject);
+			}
+		}
 	}
 	
 	/**
@@ -211,6 +232,13 @@ public class Injector {
 			InjectPreferencesJsonInterpolator injectPreferencesJsonInterpolator = new InjectPreferencesJsonInterpolator(context);
 			for(Field field : preferencesJsonFields){
 				injectPreferencesJsonInterpolator.onInject(field, injectObject);
+			}
+		}
+		
+		if(preferencesEnumFields != null && preferencesEnumFields.size() > 0){
+			InjectPreferencesEnumInterpolator injectPreferencesEnumInterpolator = new InjectPreferencesEnumInterpolator(context);
+			for(Field field : preferencesEnumFields){
+				injectPreferencesEnumInterpolator.onInject(field, injectObject);
 			}
 		}
 	}

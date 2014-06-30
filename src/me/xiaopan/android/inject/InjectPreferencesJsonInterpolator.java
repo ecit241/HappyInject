@@ -22,19 +22,19 @@ public class InjectPreferencesJsonInterpolator implements InjectInterpolator {
 
 	@Override
 	public void onInject(Field field, Object object) {
-		InjectPreferenceJson injectPreference = field.getAnnotation(InjectPreferenceJson.class);
-		if(injectPreference.value() != null && !"".equals(injectPreference.value().trim())){
+		InjectPreferencesJson injectPreferencesJson = field.getAnnotation(InjectPreferencesJson.class);
+		if(injectPreferencesJson.value() != null && !"".equals(injectPreferencesJson.value().trim())){
 			SharedPreferences sharedPreferences = null;
-			if(injectPreference.sharedPreferencesName() != null && !"".equals(injectPreference.sharedPreferencesName().trim())){
-				sharedPreferences = context.getSharedPreferences(injectPreference.sharedPreferencesName(), injectPreference.mode());
+			if(injectPreferencesJson.sharedPreferencesName() != null && !"".equals(injectPreferencesJson.sharedPreferencesName().trim())){
+				sharedPreferences = context.getSharedPreferences(injectPreferencesJson.sharedPreferencesName(), injectPreferencesJson.mode());
 			}else{
 				sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 			}
 			try {
-				String valueObject = sharedPreferences.getString(injectPreference.value(), null);
+				String valueObject = sharedPreferences.getString(injectPreferencesJson.value(), null);
 				if(valueObject != null && !"".equals(valueObject.trim())){
 					Gson gson = null;
-					if(injectPreference.withoutExposeAnnotation()){
+					if(injectPreferencesJson.withoutExposeAnnotation()){
 						gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 					}else{
 						gson = new Gson();

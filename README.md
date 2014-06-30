@@ -5,7 +5,7 @@ HappyInject是Android上的一个注入类库，类似于RoboGuice，但比RoboG
 ## Features
 >* 提供Layout、View、Resource、Bundle Extra、Service、SharedPreferences、Fragment等资源的注入；
 >* 特别提供了InjectAdapter、InjectExpandableListAdapter通过注入来避免创建新的Adapter；
->* 由于只专注于上述资源的注入，因此比RoboGuice更轻量级。
+>* 由于只专注于View、参数以及资源的注入，因此比RoboGuice更轻量级。
 
 ## Usage guide
 可继承的超类分以下四种：
@@ -65,6 +65,12 @@ Adapter：
     3. InjectAdapter.ViewHolder
     4. InjectExpandableListAdapter.GroupViewHolder
     5. InjectExpandableListAdapter.ChildViewHolder
+>* InjectView：注入View。适用于以下场合：
+    1. Activity
+    2. Fragment
+    3. InjectAdapter.ViewHolder
+    3. InjectExpandableListAdapter.GroupViewHolder
+    3. InjectExpandableListAdapter.ChildViewHolder
 >* InjectExtra：注入Bundle中的参数。适用于以下场合：
     1. Activity：Bundle来自getIntent().getExtras()
     2. Fragment：Bundle来自getArguments()
@@ -73,8 +79,12 @@ Adapter：
     1. Activity：Bundle来自getIntent().getExtras()
     2. Fragment：Bundle来自getArguments()
     3. BroadcastReceiver：Bundle来自onReceive()方法中intent参数的getExtras()
+>* InjectExtraEnum：将Bundle中的字符串转换成Enum对象。适用于以下场合：
+    1. Activity：Bundle来自getIntent().getExtras()
+    2. Fragment：Bundle来自getArguments()
+    3. BroadcastReceiver：Bundle来自onReceive()方法中intent参数的getExtras()
 >* InjectFragment：注入Fragment。只支持FragmentActivity中Fragment类型的字段；
->* InjectParentMember：注入父类的成员变量。默认是不注入父类的成员变量的；适用于以下场合：
+>* InjectPreferences：注入SharedPreferences中的参数。SharedPreferencees的名称可通过sharedPreferencesName参数指定，不指定时将从默认的SharedPreferencees中获取参数；适用于以下场合：
     1. Activity
     2. Fragment
     3. Service
@@ -84,7 +94,7 @@ Adapter：
     7. InjectAdapter.ViewHolder
     8. InjectExpandableListAdapter.GroupViewHolder
     9. InjectExpandableListAdapter.ChildViewHolder
->* InjectPreference：注入SharedPreferences中的参数。SharedPreferencees的名称可通过sharedPreferencesName参数指定，不指定时将从默认的SharedPreferencees中获取参数；适用于以下场合：
+>* InjectPreferencesJson：将SharedPreferences中的字符串通过Gson转换成对象，适用于以下场合：
     1. Activity
     2. Fragment
     3. Service
@@ -94,7 +104,7 @@ Adapter：
     7. InjectAdapter.ViewHolder
     8. InjectExpandableListAdapter.GroupViewHolder
     9. InjectExpandableListAdapter.ChildViewHolder
->* InjectPreferenceJson：将SharedPreferences中的字符串通过Gson转换成对象适用于以下场合：
+>* InjectPreferencesEnum：将SharedPreferences中的字符串转换成Enum对象，适用于以下场合：
     1. Activity
     2. Fragment
     3. Service
@@ -114,12 +124,16 @@ Adapter：
     7. InjectAdapter.ViewHolder
     8. InjectExpandableListAdapter.GroupViewHolder
     9. InjectExpandableListAdapter.ChildViewHolder
->* InjectView：注入View。适用于以下场合：
+>* InjectParentMember：注入父类的成员变量。默认是不注入父类的成员变量的；适用于以下场合：
     1. Activity
     2. Fragment
-    3. InjectAdapter.ViewHolder
-    3. InjectExpandableListAdapter.GroupViewHolder
-    3. InjectExpandableListAdapter.ChildViewHolder
+    3. Service
+    4. BroadcastRecevier
+    5. ContextProvidet
+    6. Loader
+    7. InjectAdapter.ViewHolder
+    8. InjectExpandableListAdapter.GroupViewHolder
+    9. InjectExpandableListAdapter.ChildViewHolder
     
 #### Examples
 ##### InjectActivity：
@@ -149,6 +163,7 @@ public class MainActivity extends FragmentActivity{
 	public static final String PARAM_CHAR_SEQUENCE = "PARAM_CHAR_SEQUENCE";
 	public static final String PARAM_CHAR_SEQUENCE_ARRAY = "PARAM_CHAR_SEQUENCE_ARRAY";
 	public static final String PARAM_STRING_JSON = "PARAM_STRING_JSON";
+	public static final String PARAM_STRING_ENUM = "PARAM_STRING_ENUM";
 	public static final String KEY_BOOLEAN = "KEY_BOOLEAN";
 	public static final String KEY_FLOAT = "KEY_FLOAT";
 	public static final String KEY_INT = "KEY_INT";
@@ -156,12 +171,14 @@ public class MainActivity extends FragmentActivity{
 	public static final String KEY_STRING = "KEY_STRING";
 	public static final String KEY_STRING_SET = "KEY_STRING_SET";
 	public static final String KEY_JSON = "KEY_JSON";
+	public static final String KEY_ENUM = "KEY_ENUM";
+	
+	private ListView listView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		ListView listView = new ListView(getBaseContext());
+		listView = new ListView(getBaseContext());
 		setContentView(listView);
 		
 		// 先在SharedPreferences中放一些数据
@@ -181,62 +198,80 @@ public class MainActivity extends FragmentActivity{
 		bean2.setName("小潘2");
 		bean2.setSex("男2");
 		PreferenceUtils.putObject(getBaseContext(), KEY_JSON, bean2);
+		PreferenceUtils.putString(getBaseContext(), KEY_ENUM, Sex.WOMAN.name());
 		
 		// 然后初始化列表
-		String[] items = new String[]{"注入功能测试", "非注入功能测试", "FragmentDialog测试"};
+		String[] items = new String[]{"注入功能测试", "非注入功能测试", "FragmentDialog测试", "InjectAdapter", "InjectExpandableListAdapter"};
 		listView.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, android.R.id.text1, items));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Bundle bundle = new Bundle();
-				bundle.putBoolean(MainActivity.PARAM_BOOLEAN, true);
-				bundle.putBooleanArray(MainActivity.PARAM_BOOLEAN_ARRAY, new boolean[]{true, false, true});
-				bundle.putByte(MainActivity.PARAM_BYTE, (byte) 110);
-				bundle.putByteArray(MainActivity.PARAM_BYTE_ARRAY, new byte[]{111, 112, 113});
-				bundle.putChar(MainActivity.PARAM_CHAR, 'R');
-				bundle.putCharArray(MainActivity.PARAM_CHAR_ARRAY, new char[]{'c', 'h', 'a', 'r'});
-				bundle.putCharSequence(MainActivity.PARAM_CHAR_SEQUENCE, "CharSequence");
-				bundle.putCharSequenceArray(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY, new CharSequence[]{"Char", " ", "Sequence"});
-				bundle.putDouble(MainActivity.PARAM_DOUBLE, 12.00d);
-				bundle.putDoubleArray(MainActivity.PARAM_DOUBLE_ARRAY, new double[]{12.01d, 12.02d, 12.03d});
-				bundle.putFloat(MainActivity.PARAM_FLOAT, 13.00f);
-				bundle.putFloatArray(MainActivity.PARAM_FLOAT_ARRAY, new float[]{13.01f, 13.02f, 13.03f});
-				bundle.putInt(MainActivity.PARAM_INT, 120);
-				bundle.putIntArray(MainActivity.PARAM_INT_ARRAY, new int[]{121, 122, 123,});
-				bundle.putLong(MainActivity.PARAM_LONG, 12345);
-				bundle.putLongArray(MainActivity.PARAM_LONG_ARRAY, new long[]{12346, 12347, 12348});
-				bundle.putShort(MainActivity.PARAM_SHORT, (short) 2);
-				bundle.putShortArray(MainActivity.PARAM_SHORT_ARRAY, new short[]{3, 4, 5});
-				bundle.putString(MainActivity.PARAM_STRING, "String");
-				bundle.putStringArray(MainActivity.PARAM_STRING_ARRAY, new String[]{"String1", "String2", "String3"});
-				
-				// 将一个对象转换成JSON字符串放进Bundle中
-				MyBean bean = new MyBean();
-				bean.setEmail("sky@xiaopan.me");
-				bean.setName("小潘");
-				bean.setSex("男");
-				bundle.putString(PARAM_STRING_JSON, new Gson().toJson(bean));
-				
-				// 放一个字符串列表进去
-				ArrayList<String> stringList = new ArrayList<String>();
-				stringList.add("ArrayList String 1");
-				stringList.add("ArrayList String 2");
-				stringList.add("ArrayList String 3");
-				bundle.putStringArrayList(MainActivity.PARAM_STRING_ARRAY_LIST, stringList);
-				switch(position){
+				if(position <= 2){
+					Bundle bundle = new Bundle();
+					bundle.putBoolean(MainActivity.PARAM_BOOLEAN, true);
+					bundle.putBooleanArray(MainActivity.PARAM_BOOLEAN_ARRAY, new boolean[]{true, false, true});
+					bundle.putByte(MainActivity.PARAM_BYTE, (byte) 110);
+					bundle.putByteArray(MainActivity.PARAM_BYTE_ARRAY, new byte[]{111, 112, 113});
+					bundle.putChar(MainActivity.PARAM_CHAR, 'R');
+					bundle.putCharArray(MainActivity.PARAM_CHAR_ARRAY, new char[]{'c', 'h', 'a', 'r'});
+					bundle.putCharSequence(MainActivity.PARAM_CHAR_SEQUENCE, "CharSequence");
+					bundle.putCharSequenceArray(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY, new CharSequence[]{"Char", " ", "Sequence"});
+					bundle.putDouble(MainActivity.PARAM_DOUBLE, 12.00d);
+					bundle.putDoubleArray(MainActivity.PARAM_DOUBLE_ARRAY, new double[]{12.01d, 12.02d, 12.03d});
+					bundle.putFloat(MainActivity.PARAM_FLOAT, 13.00f);
+					bundle.putFloatArray(MainActivity.PARAM_FLOAT_ARRAY, new float[]{13.01f, 13.02f, 13.03f});
+					bundle.putInt(MainActivity.PARAM_INT, 120);
+					bundle.putIntArray(MainActivity.PARAM_INT_ARRAY, new int[]{121, 122, 123,});
+					bundle.putLong(MainActivity.PARAM_LONG, 12345);
+					bundle.putLongArray(MainActivity.PARAM_LONG_ARRAY, new long[]{12346, 12347, 12348});
+					bundle.putShort(MainActivity.PARAM_SHORT, (short) 2);
+					bundle.putShortArray(MainActivity.PARAM_SHORT_ARRAY, new short[]{3, 4, 5});
+					bundle.putString(MainActivity.PARAM_STRING, "String");
+					bundle.putStringArray(MainActivity.PARAM_STRING_ARRAY, new String[]{"String1", "String2", "String3"});
+					
+					// 将一个对象转换成JSON字符串放进Bundle中
+					MyBean bean = new MyBean();
+					bean.setEmail("sky@xiaopan.me");
+					bean.setName("小潘");
+					bean.setSex("男");
+					bundle.putString(PARAM_STRING_JSON, new Gson().toJson(bean));
+					
+					bundle.putString(MainActivity.PARAM_STRING_ENUM, Sex.WOMAN.name());
+					
+					// 放一个字符串列表进去
+					ArrayList<String> stringList = new ArrayList<String>();
+					stringList.add("ArrayList String 1");
+					stringList.add("ArrayList String 2");
+					stringList.add("ArrayList String 3");
+					bundle.putStringArrayList(MainActivity.PARAM_STRING_ARRAY_LIST, stringList);
+					switch(position){
 					case 0 : 
+						Second.SECOND_CHRONOGRAPH.lap(); 
 						Intent intent = new Intent(getBaseContext(), InjectTestActivity.class);
 						intent.putExtras(bundle);
 						startActivity(intent);
 						break;
 					case 1 : 
+						Second.SECOND_CHRONOGRAPH.lap(); 
 						Intent intent2 = new Intent(getBaseContext(), NormalActivity.class);
 						intent2.putExtras(bundle);
 						startActivity(intent2);
 						break;
 					case 2 : 
+						Second.SECOND_CHRONOGRAPH.lap(); 
 						new TestDialogFragment().show(getSupportFragmentManager(), ""); 
 						break;
+					}
+				} else {
+					Class<?> targetClass = null;
+					if(position == 3){
+						targetClass = InjectAdapterActivity.class;
+					}else if(position == 4){
+						targetClass = InjectExpandableListAdapterActivity.class;
+					}
+					if(targetClass != null){
+						startActivity(new Intent(getBaseContext(), targetClass));
+					}
 				}
 			}
 		});
@@ -244,7 +279,7 @@ public class MainActivity extends FragmentActivity{
 }
 ```
 
-其次来看一下普通的实现方式是怎么接收数据的
+然后来看一下普通的实现方式是怎么接收数据的
 
 ```java
 public class NormalActivity extends Activity {
@@ -276,29 +311,30 @@ public class NormalActivity extends Activity {
 	private CharSequence charSequenceField;
 	private CharSequence[] charSequenceFields;
 	private MyBean bean;
+	private Sex sex;
 	
-	private AccessibilityManager accessibilityManager;
-	private AccountManager accountManager;
-	private ActivityManager activityManager;
-	private AlarmManager alarmManager;
-	private AudioManager audioManager;
-	private ConnectivityManager connectivityManager;
-	private DevicePolicyManager devicePolicyManager;
-	private DropBoxManager dropBoxManager;
-	private InputMethodManager inputMethodManager;
-	private KeyguardManager keyguardManager;
-	private LayoutInflater layoutInflater;
-	private LocationManager locationManager;
-	private NotificationManager notificationManager;
-	private PowerManager powerManager;
-	private SearchManager searchManager;
-	private SensorManager sensorManager;
-	private TelephonyManager telephonyManager;
-	private UiModeManager uiModeManager;
-	private Vibrator vibrator;
-	private WallpaperManager wallpaperManager;
-	private WifiManager wifiManager;
-	private WindowManager windowManager;
+	@Inject private AccessibilityManager accessibilityManager;
+	@Inject private AccountManager accountManager;
+	@Inject private ActivityManager activityManager;
+	@Inject private AlarmManager alarmManager;
+	@Inject private AudioManager audioManager;
+	@Inject private ConnectivityManager connectivityManager;
+	@Inject private DevicePolicyManager devicePolicyManager;
+	@Inject private DropBoxManager dropBoxManager;
+	@Inject private InputMethodManager inputMethodManager;
+	@Inject private KeyguardManager keyguardManager;
+	@Inject private LayoutInflater layoutInflater;
+	@Inject private LocationManager locationManager;
+	@Inject private NotificationManager notificationManager;
+	@Inject private PowerManager powerManager;
+	@Inject private SearchManager searchManager;
+	@Inject private SensorManager sensorManager;
+	@Inject private TelephonyManager telephonyManager;
+	@Inject private UiModeManager uiModeManager;
+	@Inject private Vibrator vibrator;
+	@Inject private WallpaperManager wallpaperManager;
+	@Inject private WifiManager wifiManager;
+	@Inject private WindowManager windowManager;
 	
 	private boolean booleanPreference;
 	private float floatPreference;
@@ -307,6 +343,7 @@ public class NormalActivity extends Activity {
 	private String stringPreference;
 	private Set<String> stringSetPreference;
 	private MyBean bean2;
+	private Sex sex2;
 	
 	private int integer1;
 	private String string1;
@@ -347,8 +384,8 @@ public class NormalActivity extends Activity {
 		stringFieldList = getIntent().getStringArrayListExtra(MainActivity.PARAM_STRING_ARRAY_LIST);
 		charSequenceField = getIntent().getCharSequenceExtra(MainActivity.PARAM_CHAR_SEQUENCE);
 		charSequenceFields = getIntent().getCharSequenceArrayExtra(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY);
-		
 		bean = new Gson().fromJson(getIntent().getStringExtra(MainActivity.PARAM_STRING_JSON), MyBean.class);
+		sex = Sex.valueOf(getIntent().getStringExtra(MainActivity.PARAM_STRING_ENUM));
 		
 		accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
 		accountManager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
@@ -380,6 +417,7 @@ public class NormalActivity extends Activity {
 		stringPreference = PreferenceUtils.getString(getBaseContext(), MainActivity.KEY_STRING);
 		stringSetPreference = PreferenceUtils.getStringSet(getBaseContext(), MainActivity.KEY_STRING_SET);
 		bean2 = PreferenceUtils.getObject(getBaseContext(), MainActivity.KEY_JSON, MyBean.class);
+		sex2 = Sex.valueOf(PreferenceUtils.getString(getBaseContext(), MainActivity.KEY_ENUM));
 		
 		integer1 = getResources().getInteger(R.integer.integer1);
 		string1 = getResources().getString(R.string.string1);
@@ -425,6 +463,7 @@ public class InjectTestActivity extends InjectActivity {
 	@InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE) private CharSequence charSequenceField;
 	@InjectExtra(MainActivity.PARAM_CHAR_SEQUENCE_ARRAY) private CharSequence[] charSequenceFields;
 	@InjectExtraJson(MainActivity.PARAM_STRING_JSON) private MyBean bean;
+	@InjectExtraEnum(MainActivity.PARAM_STRING_ENUM) private Sex sex;
 
 	@Inject private AccessibilityManager accessibilityManager;
 	@Inject private AccountManager accountManager;
@@ -449,13 +488,14 @@ public class InjectTestActivity extends InjectActivity {
 	@Inject private WifiManager wifiManager;
 	@Inject private WindowManager windowManager;
 	
-	@InjectPreference(MainActivity.KEY_BOOLEAN) private boolean booleanPreference;
-	@InjectPreference(MainActivity.KEY_FLOAT) private float floatPreference;
-	@InjectPreference(MainActivity.KEY_INT) private int intPreference;
-	@InjectPreference(MainActivity.KEY_LONG) private long longPreference;
-	@InjectPreference(MainActivity.KEY_STRING) private String stringPreference;
-	@InjectPreference(MainActivity.KEY_STRING_SET) private Set<String> stringSetPreference;
-	@InjectPreferenceJson(MainActivity.KEY_JSON) private MyBean bean2;
+	@InjectPreferences(MainActivity.KEY_BOOLEAN) private boolean booleanPreference;
+	@InjectPreferences(MainActivity.KEY_FLOAT) private float floatPreference;
+	@InjectPreferences(MainActivity.KEY_INT) private int intPreference;
+	@InjectPreferences(MainActivity.KEY_LONG) private long longPreference;
+	@InjectPreferences(MainActivity.KEY_STRING) private String stringPreference;
+	@InjectPreferences(MainActivity.KEY_STRING_SET) private Set<String> stringSetPreference;
+	@InjectPreferencesJson(MainActivity.KEY_JSON) private MyBean bean2;
+	@InjectPreferencesEnum(MainActivity.KEY_ENUM) private Sex sex2;
 	
 	@InjectResource(R.integer.integer1) private int integer1;
 	@InjectResource(R.string.string1) private String string1;
@@ -472,7 +512,7 @@ public class InjectTestActivity extends InjectActivity {
 }
 ```
 
-这么一对比发现注入方式太简洁了，简直无与伦比了。其它的InjectService、InjectBroadcastReceiver等的使用方式同Activity类似。
+这么一对比发现注入方式太简洁了。其它的InjectService、InjectBroadcastReceiver等的使用方式同Activity类似。
 
 ##### InjectFragment
 同样下来看一下通常的Fragment的实现：
@@ -638,9 +678,8 @@ listView.setAdapter(new InjectAdapter<Expert, ExpertViewHolder>(getBaseContext()
 InjectExpandableListAdapter的用法同InjectAdapter一样。
 
 ## Downloads
->* [android-happy-inject-1.2.2.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.2.jar)
-
->* [android-happy-inject-1.2.2-with-src.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.2.2-with-src.jar)
+>* [android-happy-inject-1.3.0.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.3.0.jar)
+>* [android-happy-inject-1.3.0-with-src.jar](https://github.com/xiaopansky/HappyInject/raw/master/releases/android-happy-inject-1.3.0-with-src.jar)
 
 Dependencies
 >* [android-support-v4.jar](https://github.com/xiaopansky/HappyInject/raw/master/libs/android-support-v4.jar) 可选的。如果你要使用InjectFragmentActivity、InjectFragment、InjectListFeagment、InjectDialogFragment就必须要引入此类库
@@ -650,6 +689,10 @@ Dependencies
 >*  如果你要使用InjectMapActivity就必须选择Google APIs
 
 ## Change Log
+### 1.3.0
+>* 优化InjectAdapter和InjectExpandableListAdapter，在初始化Item布局时采用LayoutInflater.inflate(int resource, ViewGroup root, boolean attachToRoot)方法来初始化，这样就Item根视图就支持布局layout_系列的参数了
+>* 增加InjectExtraEnum和InjectPreferencesEnum注解，方便注入Enum对象
+
 ### 1.2.2
 >* ViewHolder接口增加onCreate()回调
 >* 修改BindEventListener名称为ViewHolderCreateListener

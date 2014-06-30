@@ -98,7 +98,7 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
                 if(injectContentView == null){
                 	throw new IllegalArgumentException("Not found InjectContentView Annotation in "+groupHolderClass.getName());
                 }
-                convertView = LayoutInflater.from(context).inflate(injectContentView.value(), null);
+                convertView = LayoutInflater.from(context).inflate(injectContentView.value(), parent, false);
                 groupViewHolder = groupHolderClass.newInstance();
                 if(injector == null){
                 	injector = new Injector(groupViewHolder);
@@ -135,7 +135,7 @@ public class InjectExpandableListAdapter<Group extends InjectExpandableListAdapt
                 if(injectContentView == null){
                 	throw new IllegalArgumentException("Not found InjectContentView Annotation in "+childHolderClass.getName());
                 }
-                convertView = LayoutInflater.from(context).inflate(injectContentView.value(), null);
+                convertView = LayoutInflater.from(context).inflate(injectContentView.value(), parent, false);
                 childViewHolder = childHolderClass.newInstance();
                 if(injector == null){
                 	injector = new Injector(childViewHolder);

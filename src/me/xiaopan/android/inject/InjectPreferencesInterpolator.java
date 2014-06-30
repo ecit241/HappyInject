@@ -27,7 +27,7 @@ public class InjectPreferencesInterpolator implements InjectInterpolator {
 
 	@Override
 	public void onInject(Field field, Object object) {
-		InjectPreference injectPreference = field.getAnnotation(InjectPreference.class);
+		InjectPreferences injectPreference = field.getAnnotation(InjectPreferences.class);
 		Class<?> fieldType = field.getType();
 		try {
 			if(boolean.class.isAssignableFrom(fieldType)){
@@ -58,7 +58,7 @@ public class InjectPreferencesInterpolator implements InjectInterpolator {
 		}
 	}
 	
-	private SharedPreferences getSharedPreferences(InjectPreference injectPreference){
+	private SharedPreferences getSharedPreferences(InjectPreferences injectPreference){
 		SharedPreferences sharedPreferences;
 		if(injectPreference.sharedPreferencesName() != null && !"".equals(injectPreference.sharedPreferencesName().trim())){
 			sharedPreferences = context.getSharedPreferences(injectPreference.sharedPreferencesName(), injectPreference.mode());
